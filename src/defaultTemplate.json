@@ -1,22 +1,22 @@
 {
   "identitas": {
     "universitas": "UNIVERSITAS JEMBER",
-    "fakultas": "FAKULTAS KEGURUAN DAN ILMU PENDIDIKAN",
-    "prodi": "PROGRAM STUDI PENDIDIKAN BIOLOGI",
+    "fakultas": "FAKULTAS ILMU KOMPUTER",
+    "prodi": "PROGRAM STUDI MAGISTER ILMU KOMPUTER",
     "kode_dokumen": "Form PP-2"
   },
   "matakuliah": {
-    "nama": "Etnobiologi",
+    "nama": "Metodologi Penelitian",
     "kode": "KPB1704",
-    "rumpun": "Pilihan KeRis 2",
-    "bobot": "T=2, P=0",
-    "semester": "4-7",
+    "rumpun": "WAJIB",
+    "bobot": "T=3, P=0",
+    "semester": "1",
     "tanggal_penyusunan": "20 Agustus 2021"
   },
   "otorisasi": {
-    "dosen_pengembang": "Dr. Iis Nur Asyiah, SP., MP",
-    "koordinator_rmk": "Dr. Iis Nur Asyiah, SP., MP",
-    "kaprodi": "Erlia Narulita, S.Pd., M. Si., Ph.D"
+    "dosen_pengembang": "Prof. Slamin",
+    "koordinator_rmk": "Prof. Slamin",
+    "kaprodi": "Dr. Dwiretno Istiyadi Swasono, ST., M.Komn"
   },
   "capaian_pembelajaran": {
     "cpl_prodi": [
@@ -111,49 +111,81 @@
     {
       "komponen": "Tugas: Diskusi melalui LKM (Sub-CPMK 1)",
       "persentase": 5,
-      "cpmk": [true, false, false],
+      "cpmk": [
+        true,
+        false,
+        false
+      ],
       "media": "LKM 1_Pendahuluan"
     },
     {
       "komponen": "Tugas: Pengamatan dan Praktek (Sub-CPMK 2)",
       "persentase": 15,
-      "cpmk": [true, true, false],
+      "cpmk": [
+        true,
+        true,
+        false
+      ],
       "media": "RTM 1_Pengamatan dan Praktek koleksi sampel tumbuhan dan spesimen"
     },
     {
       "komponen": "Tugas: membuat makalah dan presentasi (Sub-CPMK 3)",
       "persentase": 20,
-      "cpmk": [true, false, false],
+      "cpmk": [
+        true,
+        false,
+        false
+      ],
       "media": "RTM 2_ Penggunaan SDH secara tradisional oleh suku tertentu"
     },
     {
       "komponen": "Tugas: menyusun metode penelitian etnobiologi (Sub-CPMK 5)",
       "persentase": 5,
-      "cpmk": [false, true, false],
+      "cpmk": [
+        false,
+        true,
+        false
+      ],
       "media": "LKM 3_Metode Penelitian Etnobiologi"
     },
     {
       "komponen": "Tugas: Melakukan penelitian etnobiologi (Sub-CPMK 4, 6)",
       "persentase": 25,
-      "cpmk": [false, true, false],
+      "cpmk": [
+        false,
+        true,
+        false
+      ],
       "media": "RTM 3_Penelitian etnobiologi pada suku tertentu"
     },
     {
       "komponen": "Tugas: Menyusun laporan penelitian etnobiologi dalam bentuk poster (Sub-CPMK 7)",
       "persentase": 15,
-      "cpmk": [false, true, false],
+      "cpmk": [
+        false,
+        true,
+        false
+      ],
       "media": "RTM 3_Penelitian etnobiologi pada suku tertentu"
     },
     {
       "komponen": "Tugas: mendengarkan instrument medley lagu daerah terpilih (Sub-CPMK 8)",
       "persentase": 5,
-      "cpmk": [false, false, true],
+      "cpmk": [
+        false,
+        false,
+        true
+      ],
       "media": "LKM 2_ mendengarkan instrument medley lagu daerah terpilih"
     },
     {
       "komponen": "Tugas: Pembuatan leaflet (Sub-CPMK 9)",
       "persentase": 10,
-      "cpmk": [false, false, true],
+      "cpmk": [
+        false,
+        false,
+        true
+      ],
       "media": "RTM 4_Karakteristik salah satu suku bangsa di Indonesia"
     }
   ],

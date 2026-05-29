@@ -311,6 +311,8 @@ body {
   margin: 0 auto 40px;
   position: relative;
   box-sizing: border-box;
+  transform-origin: top center;
+  transition: transform 0.2s ease;
 }
 
 /* Buttons */
@@ -495,11 +497,21 @@ body {
   margin-bottom: 4px;
 }
 
+/* Printing page setup at top-level */
+@page {
+  size: landscape;
+  margin: 15mm;
+}
+
 /* Printing styles - hides left side and exports cleanly */
 @media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
   @page {
-    size: A4 landscape;
-    margin: 15mm;
+    size: landscape;
   }
   
   body, .app-layout, .preview-pane, .preview-container {
@@ -530,6 +542,7 @@ body {
     min-height: 0 !important;
     display: block !important;
     page-break-after: avoid;
+    transform: none !important;
   }
 
   .doc-table {

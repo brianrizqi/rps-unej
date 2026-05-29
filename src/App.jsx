@@ -1037,10 +1037,10 @@ export default function App() {
                   {/* CPL Row 1 & Details */}
                   <tr>
                     <td 
-                      rowSpan={1 + data.capaian_pembelajaran.cpl_prodi.length + 1 + data.capaian_pembelajaran.cpmk.length + 1 + data.capaian_pembelajaran.pemetaan_cpl_cpmk.length}
+                      rowSpan={1 + data.capaian_pembelajaran.cpl_prodi.length}
                       width="15%" 
                       className="font-bold text-center" 
-                      style={{ verticalAlign: 'middle', backgroundColor: '#ffffff', fontSize: '9pt' }}
+                      style={{ verticalAlign: 'middle', backgroundColor: '#ffffff', fontSize: '9pt', borderBottom: 'none' }}
                     >
                       Capaian Pembelajaran (CP)
                     </td>
@@ -1057,6 +1057,12 @@ export default function App() {
 
                   {/* CPMK Title & Details */}
                   <tr>
+                    <td 
+                      rowSpan={1 + data.capaian_pembelajaran.cpmk.length}
+                      width="15%" 
+                      style={{ backgroundColor: '#ffffff', borderTop: 'none', borderBottom: 'none' }}
+                    >
+                    </td>
                     <td colSpan={7} className="font-bold" style={{ backgroundColor: '#f2f2f2', fontSize: '8pt', padding: '6px' }}>
                       Capaian Pembelajaran Matakuliah (CPMK)
                     </td>
@@ -1070,6 +1076,12 @@ export default function App() {
 
                   {/* Mapping Title & Details */}
                   <tr style={{ backgroundColor: '#f2f2f2', fontSize: '8pt' }} className="font-bold text-center">
+                    <td 
+                      rowSpan={1 + data.capaian_pembelajaran.pemetaan_cpl_cpmk.length}
+                      width="15%" 
+                      style={{ backgroundColor: '#ffffff', borderTop: 'none' }}
+                    >
+                    </td>
                     <td>CPL</td>
                     <td>CPMK</td>
                     <td colSpan={5}>Sub-CPMK (Kemampuan Akhir yg Diharapkan)</td>
