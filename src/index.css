@@ -278,6 +278,124 @@ body {
   padding: 0 20px;
 }
 
+.preview-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+  animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.preview-status-text {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-ui);
+  letter-spacing: 0.05em;
+}
+
+.zoom-controls-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.zoom-capsule {
+  display: inline-flex;
+  align-items: center;
+  background-color: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-ui);
+  border-radius: 9999px;
+  padding: 2px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.zoom-capsule-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.zoom-capsule-btn:hover {
+  color: var(--text-ui);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.zoom-capsule-val {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-ui);
+  min-width: 40px;
+  text-align: center;
+  font-family: monospace;
+}
+
+.zoom-presets-group {
+  display: inline-flex;
+  align-items: center;
+  background-color: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-ui);
+  border-radius: 9999px;
+  padding: 2px;
+  gap: 2px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.zoom-preset-btn {
+  background: none;
+  border: none;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.zoom-preset-btn:hover {
+  color: var(--text-ui);
+}
+
+.zoom-preset-btn.active {
+  background-color: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.4);
+}
+
 .preview-title {
   font-size: 0.875rem;
   font-weight: 600;

@@ -13,7 +13,9 @@ import {
   Eye,
   Printer,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  ZoomIn,
+  ZoomOut
 } from 'lucide-react';
 import defaultTemplate from './defaultTemplate.json';
 import unejLogo from './assets/Logo Baku UNEJ 2020 Medium Res.png';
@@ -24,6 +26,7 @@ export default function App() {
   const [jsonError, setJsonError] = useState(null);
   const [activeTab, setActiveTab] = useState('form'); // 'form' or 'json'
   const [theme, setTheme] = useState('dark');
+  const [zoom, setZoom] = useState(70); // default zoom to fit screen (70%)
   const [collapsedSections, setCollapsedSections] = useState({
     identitas: false,
     matakuliah: false,
@@ -953,17 +956,64 @@ export default function App() {
         {/* Right pane: Pixel-Perfect Document Preview */}
         <section className="preview-pane">
           <div className="preview-toolbar">
-            <div className="preview-title">
-              <Eye className="text-emerald-500" size={16} /> Pratinjau Dokumen (Format A4 Standar)
+            <div className="preview-status">
+              <div className="pulse-dot" />
+              <span className="preview-status-text">
+                A4 Landscape Live Preview
+              </span>
             </div>
-            <button className="btn btn-accent py-1 px-3 text-xs" onClick={handlePrint}>
-              <Printer size={14} /> Cetak / Unduh PDF
-            </button>
+            
+            <div className="zoom-controls-wrapper">
+              {/* Zoom Capsule */}
+              <div className="zoom-capsule">
+                <button 
+                  onClick={() => setZoom(Math.max(40, zoom - 5))}
+                  className="zoom-capsule-btn"
+                  title="Perkecil (Zoom Out)"
+                >
+                  <ZoomOut size={12} />
+                </button>
+                
+                <span className="zoom-capsule-val">
+                  {zoom}%
+                </span>
+                
+                <button 
+                  onClick={() => setZoom(Math.min(150, zoom + 5))}
+                  className="zoom-capsule-btn"
+                  title="Perbesar (Zoom In)"
+                >
+                  <ZoomIn size={12} />
+                </button>
+              </div>
+
+              {/* Quick Presets */}
+              <div className="zoom-presets-group">
+                <button 
+                  onClick={() => setZoom(70)}
+                  className={`zoom-preset-btn ${zoom === 70 ? 'active' : ''}`}
+                >
+                  Fit
+                </button>
+                <button 
+                  onClick={() => setZoom(100)}
+                  className={`zoom-preset-btn ${zoom === 100 ? 'active' : ''}`}
+                >
+                  100%
+                </button>
+              </div>
+            </div>
           </div>
 
           <div className="preview-container">
             {/* Paper Document Representation */}
-            <article className="paper-document">
+            <article 
+              className="paper-document"
+              style={{
+                transform: `scale(${zoom / 100})`,
+                marginBottom: `calc(-210mm * (1 - ${zoom / 100}) + 40px)`
+              }}
+            >
               
               {/* Single Continuous Document Table */}
               <table className="doc-table" style={{ width: '100%', margin: 0, borderCollapse: 'collapse', border: '1.5px solid #000' }}>
