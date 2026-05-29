@@ -91,8 +91,8 @@ body {
 
 /* Sidebar / Editor Pane */
 .editor-pane {
-  width: 45%;
-  min-width: 400px;
+  width: 30%;
+  min-width: 320px;
   background-color: var(--bg-card);
   border-right: 1px solid var(--border-ui);
   display: flex;
@@ -288,7 +288,7 @@ body {
 
 .preview-container {
   flex: 1;
-  overflow-y: auto;
+  overflow: auto;
   padding: 40px 20px;
   display: flex;
   justify-content: center;
@@ -300,6 +300,7 @@ body {
 .paper-document {
   width: 297mm;
   min-height: 210mm;
+  flex-shrink: 0;
   background-color: var(--print-bg);
   color: var(--print-text);
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
