@@ -1,0 +1,355 @@
+{
+  "identitas": {
+    "universitas": "UNIVERSITAS JEMBER",
+    "fakultas": "FAKULTAS KEGURUAN DAN ILMU PENDIDIKAN",
+    "prodi": "PROGRAM STUDI PENDIDIKAN BIOLOGI",
+    "kode_dokumen": "Form PP-2"
+  },
+  "matakuliah": {
+    "nama": "Etnobiologi",
+    "kode": "KPB1704",
+    "rumpun": "Pilihan KeRis 2",
+    "bobot": "T=2, P=0",
+    "semester": "4-7",
+    "tanggal_penyusunan": "20 Agustus 2021"
+  },
+  "otorisasi": {
+    "dosen_pengembang": "Dr. Iis Nur Asyiah, SP., MP",
+    "koordinator_rmk": "Dr. Iis Nur Asyiah, SP., MP",
+    "kaprodi": "Erlia Narulita, S.Pd., M. Si., Ph.D"
+  },
+  "capaian_pembelajaran": {
+    "cpl_prodi": [
+      {
+        "kode": "CPL-6",
+        "deskripsi": "Mahasiswa mampu mengaplikasikan keterampilan dan pengetahuan biologi untuk menyelesaikan permasalahan sumber daya hayati, lingkungan, dan pembelajaran biologi dalam lingkup agroekosistem"
+      },
+      {
+        "kode": "CPL-8",
+        "deskripsi": "Mahasiswa mampu mengaplikasikan metodologi penelitian dalam ilmu biologi dan pembelajaran biologi"
+      },
+      {
+        "kode": "CPL-10",
+        "deskripsi": "Mahasiswa mampu menginternalisasi sikap takwa kepada Tuhan Yang Maha Esa dan cinta tanah air"
+      }
+    ],
+    "cpmk": [
+      {
+        "kode": "CPMK-1",
+        "deskripsi": "Mengidentifikasi SDH yang digunakan dalam kehidupan sehari-hari oleh suku-suku tertentu yang berada pada kawasan agroekosistem (6.a)"
+      },
+      {
+        "kode": "CPMK-2",
+        "deskripsi": "Melakukan penelitian etnobiologi di berbagai suku yang ada kawasan agroekosistem (8.b)"
+      },
+      {
+        "kode": "CPMK-3",
+        "deskripsi": "Menunjukkan sikap peduli terhadap kelestarian budaya Indonesia sebagai pengejawantahan sikap cinta tanah air (10.b)"
+      }
+    ],
+    "pemetaan_cpl_cpmk": [
+      {
+        "cpl": "6",
+        "cpmk": "1",
+        "sub_cpmk": "Menjelaskan ruang lingkup, definisi, sejarah etnobiologi serta etnobiologi sebagai ilmu multidisiplin melalui diskusi dan penugasan"
+      },
+      {
+        "cpl": "6",
+        "cpmk": "1",
+        "sub_cpmk": "Menjelaskan cara koleksi sampel tumbuhan dan spesimen, dokumentasi, pembuatan herbarium, awetan, dan deskripsi morfologi melalui pembelajaran kontekstual (observasi)"
+      },
+      {
+        "cpl": "6",
+        "cpmk": "1",
+        "sub_cpmk": "Mengindentifikasi SDH yang digunakan untuk pengobatan, upacara adat, pertanian, sumber makanan perawatan ternak, pengawet dan pewarna alami, bahan serat, serta upaya konservasinya oleh suku tertentu, juga asupan makanan yang ditabukan dan dianjurkan melalui studi kasus dan presentasi"
+      },
+      {
+        "cpl": "8",
+        "cpmk": "2",
+        "sub_cpmk": "Mempraktekan cara koleksi sampel tumbuhan untuk DNA Fingerprinting dan dokumentasi tumbuhan melalui pembelajaran kontekstual (observasi)"
+      },
+      {
+        "cpl": "8",
+        "cpmk": "2",
+        "sub_cpmk": "Menyusun metode penelitian etnobiologi melalui penugasan melalui team project based"
+      },
+      {
+        "cpl": "8",
+        "cpmk": "2",
+        "sub_cpmk": "Mempraktekan wawancara open ended – semistuktur melalui tugas penelitian melalui team project based"
+      },
+      {
+        "cpl": "8",
+        "cpmk": "2",
+        "sub_cpmk": "Menyusun hasil penelitian dalam bentuk poster melalui team project based"
+      },
+      {
+        "cpl": "10",
+        "cpmk": "3",
+        "sub_cpmk": "Menjelaskan keberagaman suku bangsa di Indonesia melalui tugas mendengarkan instrument medley lagu daerah terpilih"
+      },
+      {
+        "cpl": "10",
+        "cpmk": "3",
+        "sub_cpmk": "Mendeskripsikan karakter khusus salah satu suku bangsa di Indonesia melalui penugasan membuat leaflet"
+      }
+    ]
+  },
+  "deskripsi_singkat": "Mata kuliah ini membahas tentang definisi dan sejarah etnobiologi, suku bangsa di Indonesia, koleksi dan dokumentasi spesimen, metodologi penelitian etnobobiologi, subdisiplin etnobiologi: etnobotani, etnoekologi, etnoagronomi, etnoveteriner, dan etnomikologi, asupan makanan yang dianjurkan dan ditabukan.",
+  "materi_pembelajaran": [
+    "Pengertian etnobiologi secara umum dan khusus",
+    "Etnobiologi sebagai ilmu multidisplin; Sejarah etnobiologi di dunia; Sejarah etnobiologi di Indonesia",
+    "Mengenal berbagai suku bangsa di Indonesia",
+    "Koleksi sampel organisme, dokumentasi, pembuatan herbarium dan awetan, dan deskripsi morfologi",
+    "Metodologi penelitian etnobiologi",
+    "Penggunaan tumbuhan sebagai sumber pangan, obat-obatan, upacara adat, pengawet dan pewarna alami, dan bahan serat",
+    "Penggunaan hewan sebagai bahan makanan, obat dan upacara adat",
+    "Mengenal kearifan lokal tentang budaya konservasi tradisional",
+    "Mengenal kearifan lokal tentang etnoagronomi, etnoveteriner, dan etnomikologi; asupan yang dianjurkan dan ditabukan"
+  ],
+  "metode_penilaian": [
+    {
+      "komponen": "Tugas: Diskusi melalui LKM (Sub-CPMK 1)",
+      "persentase": 5,
+      "cpmk": [true, false, false],
+      "media": "LKM 1_Pendahuluan"
+    },
+    {
+      "komponen": "Tugas: Pengamatan dan Praktek (Sub-CPMK 2)",
+      "persentase": 15,
+      "cpmk": [true, true, false],
+      "media": "RTM 1_Pengamatan dan Praktek koleksi sampel tumbuhan dan spesimen"
+    },
+    {
+      "komponen": "Tugas: membuat makalah dan presentasi (Sub-CPMK 3)",
+      "persentase": 20,
+      "cpmk": [true, false, false],
+      "media": "RTM 2_ Penggunaan SDH secara tradisional oleh suku tertentu"
+    },
+    {
+      "komponen": "Tugas: menyusun metode penelitian etnobiologi (Sub-CPMK 5)",
+      "persentase": 5,
+      "cpmk": [false, true, false],
+      "media": "LKM 3_Metode Penelitian Etnobiologi"
+    },
+    {
+      "komponen": "Tugas: Melakukan penelitian etnobiologi (Sub-CPMK 4, 6)",
+      "persentase": 25,
+      "cpmk": [false, true, false],
+      "media": "RTM 3_Penelitian etnobiologi pada suku tertentu"
+    },
+    {
+      "komponen": "Tugas: Menyusun laporan penelitian etnobiologi dalam bentuk poster (Sub-CPMK 7)",
+      "persentase": 15,
+      "cpmk": [false, true, false],
+      "media": "RTM 3_Penelitian etnobiologi pada suku tertentu"
+    },
+    {
+      "komponen": "Tugas: mendengarkan instrument medley lagu daerah terpilih (Sub-CPMK 8)",
+      "persentase": 5,
+      "cpmk": [false, false, true],
+      "media": "LKM 2_ mendengarkan instrument medley lagu daerah terpilih"
+    },
+    {
+      "komponen": "Tugas: Pembuatan leaflet (Sub-CPMK 9)",
+      "persentase": 10,
+      "cpmk": [false, false, true],
+      "media": "RTM 4_Karakteristik salah satu suku bangsa di Indonesia"
+    }
+  ],
+  "pustaka": {
+    "utama": [
+      "Asyiah, I.N., R. E. Wijayanti, A. Syahputra. 2020. Pemanfaatan Tumbuhan dalam Upacara Adat Mayarakat Tengger. LaksBang PRESSindo Yogyakarta. 106 hlm.",
+      "Martinez, José Luis;Muñoz-Acevedo, Amner;Rai, Mahendra. 2019. Ethnobotany: local knowledge and traditions. CRC Press.",
+      "Ulysses Paulino Albuquerque, Rômulo Romeu Nóbrega Alves (eds.). 2016. Introduction to Ethnobiology [1 ed.]. Springer International Publishing. 310 pp.",
+      "Ulysses Paulino Albuquerque (auth.), Ulysses Paulino Albuquerque, Luiz Vital Fernandes Cruz da Cunha, Reinaldo Farias Paiva de Lucena, Rômulo Romeu Nobrega Alves (eds.). 2014. Methods and Techniques in Ethnobiology and Ethnoecology [1 ed.]. Humana Press. 480 pp.",
+      "Syahputra, A., I.N. Asyiah, M. Iqbal. 2019. Etnoagronomi (Kabupaten Situbondo). LaksBang PRESSindo Yogyakarta. 84 hlm.",
+      "Sholihah, A., W. Milasari, I.N. Asyiah, Pujiastuti. 2019. Makanan Tabu di Kabupaten Jember dan Banyuwangi. LaksBang PRESSindo Yogyakarta. 70 hlm.",
+      "Subositi, D., T. Widayat, M.B. Samsu Adi. 2015. Pedoman Koleksi Sampel Tumbuhan, Dokumentasi, Pembuatan Herbarium, dan Deskripsi Morfologi. Kementerian Kesehatan RI Badan Penelitian dan Pengembangan Kesehatan. 40 hlm."
+    ],
+    "pendukung": [
+      "Hasil Penelitian dan jurnal terkait etnobiologi"
+    ]
+  },
+  "media_pembelajaran": {
+    "software": [
+      "MS ppt",
+      "Browser: E-learning UNEJ"
+    ],
+    "hardware": [
+      "LCD",
+      "Laptop / Komputer"
+    ]
+  },
+  "team_teaching": [
+    "Dr. Iis Nur Asyiah, SP., MP"
+  ],
+  "matakuliah_prasyarat": "-",
+  "rencana_mingguan": [
+    {
+      "minggu": "Minggu Ke-1",
+      "cpmk": "CPMK 1",
+      "sub_cpmk": "Menjelaskan kontrak perkuliahan\nSub-CPMK 1\nMenjelaskan ruang lingkup, definisi, sejarah etnobiologi serta etnobiologi sebagai ilmu multidisiplin melalui diskusi dan penugasan",
+      "indikator": "Ketepatan dalam mengidentifikasi ruang lingkup etnobiologi\nKetepatan menjelaskan definisi, sejarah etnobiologi serta etnobiologi sebagai ilmu multidisiplin",
+      "komponen_penilaian": "Partisipasi forum diskusi\nLKM 1: Pendahuluan",
+      "bobot": "5%",
+      "luring": "[LKM 1]:\nMenjawab pertanyaan dalam LKM 1\n[PT+BM:(1+1) x\nx 60’)",
+      "daring": "Interaksi virtual\nForum diskusi:\n[1x(2x50’)]",
+      "materi_pembelajaran": "Perangkat pembelajaran\nPengertian etnobiologi secara umum dan khusus; Etnobiologi sebagai ilmu multidisplin; Sejarah etnobiologi di dunia; Sejarah etnobiologi di Indonesia"
+    },
+    {
+      "minggu": "Minggu Ke-2",
+      "cpmk": "CPMK-3",
+      "sub_cpmk": "Sub-CPMK 8\nMenjelaskan keberagaman suku bangsa di Indonesia melalui pengamatan video terpilih",
+      "indikator": "Ketepatan menjelaskan keberagaman suku bangsa di Indonesia melalui pengamatan video terpilih",
+      "komponen_penilaian": "Partisipasi forum diskusi\nLKM 3: Keberagaman suku bangsa di Indonesia",
+      "bobot": "5%",
+      "luring": "[LKM 2]:\nMenjawab pertanyaan dalam LKM 3\n[PT+BM:(1+1) x\n(2 x 60’)",
+      "daring": "Interaksi virtual\nForum diskusi:\n[1x(2x50’)]",
+      "materi_pembelajaran": "Keberagaman suku bangsa di Indonesia"
+    },
+    {
+      "minggu": "Minggu Ke-3",
+      "cpmk": "CPMK-3",
+      "sub_cpmk": "Sub-CPMK 9\nMendeskripsikan karakter khusus salah satu suku bangsa di Indonesia melalui penugasan",
+      "indikator": "Ketepatan mendeskripsikan karakter khusus salah satu suku bangsa di Indonesia melalui penugasan",
+      "komponen_penilaian": "Partisipasi forum diskusi\nRTM 4: Karakteristik salah satu suku bangsa di Indonesia",
+      "bobot": "10%",
+      "luring": "[RTM 4]:\nMengerjakan tugas dalam RTM 4\n[PT+BM:(1+1) x\n(2 x 60’)",
+      "daring": "Interaksi virtual\nForum diskusi:\n[1x(2x50’)]",
+      "materi_pembelajaran": "Karakteristik suku bangsa di Indonesia"
+    },
+    {
+      "minggu": "Minggu Ke-4",
+      "cpmk": "CPMK-1",
+      "sub_cpmk": "Sub-CPMK 2\nMenjelaskan cara koleksi sampel tumbuhan dan spesimen, dokumentasi, pembuatan herbarium, awetan, dan deskripsi morfologi melalui pembelajaran kontekstual (observasi)",
+      "indikator": "Ketepatan menjelaskan cara koleksi sampel tumbuhan dan spesimen, dokumentasi, pembuatan herbarium, awetan, dan deskripsi morfologi",
+      "komponen_penilaian": "Partisipasi forum diskusi\nRTM 1: Pengamatan dan Praktek koleksi sampel tumbuhan dan spesimen",
+      "bobot": "15%",
+      "luring": "[RTM 1]:\nMengerjakan tugas dalam RTM 1\n[PT+BM:(1+1) x\n(2 x 60’)",
+      "daring": "Interaksi virtual\nForum diskusi:\n[1x(2x50’)]",
+      "materi_pembelajaran": "Koleksi sampel organisme, dokumentasi, pembuatan herbarium dan awetan, dan deskripsi morfologi"
+    },
+    {
+      "minggu": "Minggu Ke-5",
+      "cpmk": "CPMK-3",
+      "sub_cpmk": "Sub-CPMK 1\nMempraktekan cara koleksi sampel tumbuhan untuk DNA Fingerprinting dan dokumentasi tumbuhan melalui pembelajaran kontekstual (observasi)",
+      "indikator": "Ketepatan dalam mempraktekan cara koleksi sampel tumbuhan untuk DNA Fingerprinting dan dokumentasi tumbuhan",
+      "komponen_penilaian": "Partisipasi dalam kelompok\nRTM 1: Pengamatan dan Praktek koleksi sampel tumbuhan dan spesimen",
+      "bobot": "-",
+      "luring": "[RTM 1]:\nMengerjakan tugas dalam RTM 1\n[PT+BM:(1+1) x\n(2 x 60’)",
+      "daring": "Interaksi virtual\nForum diskusi:\n[1x(2x50’)]",
+      "materi_pembelajaran": "Koleksi sampel organisme, dokumentasi, pembuatan herbarium dan awetan, dan deskripsi morfologi"
+    },
+    {
+      "minggu": "Minggu Ke-6",
+      "cpmk": "CPMK-2",
+      "sub_cpmk": "Sub-CPMK 5\nMenyusun metode penelitian etnobiologi melalui penugasan melalui team project based",
+      "indikator": "Ketepatan mendeskripsikan metode penelitian etnobiologi",
+      "komponen_penilaian": "Partisipasi forum diskusi\nLKM 2: Metodologi Penelitian Etnobiologi",
+      "bobot": "5%",
+      "luring": "[LKM 3]:\nMengerjakan tugas dalam LKM 2\n[PT+BM:(1+1) x\n(2 x 60’)",
+      "daring": "Interaksi virtual\nForum diskusi:\n[1x(2x50’)]",
+      "materi_pembelajaran": "Metodologi penelitian etnobiologi"
+    },
+    {
+      "minggu": "Minggu Ke-7 dan 8",
+      "cpmk": "CPMK-2",
+      "sub_cpmk": "Sub-CPMK 6\nMempraktekan wawancara open ended – semistuktur melalui tugas penelitian melalui team project based",
+      "indikator": "Ketepatan mempraktekan wawancara open ended – semistuktur melalui tugas penelitian",
+      "komponen_penilaian": "Partisipasi dalam kelompok\nRTM 3: Penelitian etnobiologi pada suku tertentu",
+      "bobot": "25%",
+      "luring": "[RTM 3]:\nMengerjakan tugas dalam RTM 3\n[PT+BM:(1+1) x\n(2 x 60’)",
+      "daring": "Interaksi virtual\nForum diskusi:\n[1x(2x50’)]",
+      "materi_pembelajaran": "Metodologi penelitian etnobiologi"
+    },
+    {
+      "minggu": "MInggu Ke -9",
+      "cpmk": "CPMK-2",
+      "sub_cpmk": "Sub-CPMK 7\nMenyusun hasil penelitian dalam bentuk poster melalui team project based",
+      "indikator": "Ketepatan Menyusun hasil penelitian dalam bentuk poster",
+      "komponen_penilaian": "Partisipasi dalam kelompok\nRTM 3_Penelitian etnobiologi pada suku tertentu",
+      "bobot": "15%",
+      "luring": "[RTM 3]:\nMengerjakan tugas dalam RTM 3\n[PT+BM:(1+1) x\n(2 x 60’)",
+      "daring": "Interaksi virtual\nForum diskusi:\n[1x(2x50’)]",
+      "materi_pembelajaran": "Metodologi penelitian etnobiologi"
+    },
+    {
+      "minggu": "Minggu Ke-10",
+      "cpmk": "CPMK-1",
+      "sub_cpmk": "Sub-CMPK 1\nMengidentifikasi SDH yang digunakan untuk pengobatan, upacara adat, pertanian, sumber makanan perawatan ternak, pengawet dan pewarna alami, bahan serat, serta upaya konservasinya oleh suku tertentu, juga asupan makanan yang ditabukan dan dianjurkan",
+      "indikator": "Ketepatan mengindentifikasi SDH yang digunakan untuk pengobatan oleh suku tertentu",
+      "komponen_penilaian": "Partisipasi dalam kelompok dan forum diskusi\nRTM 2: Penggunaan SDH secara tradisional oleh suku tertentu",
+      "bobot": "20%",
+      "luring": "[RTM 2]:\nMengerjakan tugas dalam RTM 2\n[PT+BM:(1+1) x\n(2 x 60’)",
+      "daring": "Interaksi virtual\nForum diskusi:\n[1x(2x50’)]",
+      "materi_pembelajaran": "Penggunaan SDH sebagai obat-obatan serta upaya konservasinya oleh suku tertentu"
+    },
+    {
+      "minggu": "Minggu Ke-11",
+      "cpmk": "CPMK-1",
+      "sub_cpmk": "Sub-CMPK 1\nMengidentifikasi SDH yang digunakan untuk pengobatan, upacara adat, pertanian, sumber makanan perawatan ternak, pengawet dan pewarna alami, bahan serat, serta upaya konservasinya oleh suku tertentu, juga asupan makanan yang ditabukan dan dianjurkan",
+      "indikator": "Ketepatan mengindentifikasi SDH yang digunakan untuk upacara adat oleh suku tertentu",
+      "komponen_penilaian": "Partisipasi dalam kelompok dan forum diskusi\nRTM 2: Penggunaan SDH secara tradisional oleh suku tertentu",
+      "bobot": "-",
+      "luring": "[RTM 2]:\nMengerjakan tugas dalam RTM 2\n[PT+BM:(1+1) x\n(2 x 60’)",
+      "daring": "Interaksi virtual\nForum diskusi:\n[1x(2x50’)]",
+      "materi_pembelajaran": "Penggunaan SDH dalam upacara adat serta upaya konservasinya oleh suku tertentu"
+    },
+    {
+      "minggu": "Minggu Ke-12",
+      "cpmk": "CPMK-1",
+      "sub_cpmk": "Sub-CMPK 1\nMengidentifikasi SDH yang digunakan untuk pengobatan, upacara adat, pertanian, sumber makanan perawatan ternak, pengawet dan pewarna alami, bahan serat, serta upaya konservasinya oleh suku tertentu, juga asupan makanan yang ditabukan dan dianjurkan",
+      "indikator": "Ketapatan mengindentifikasi SDH yang digunakan untuk pertanian oleh suku tertentu",
+      "komponen_penilaian": "Partisipasi dalam kelompok dan forum diskusi\nRTM 2: Penggunaan SDH secara tradisional oleh suku tertentu",
+      "bobot": "-",
+      "luring": "[RTM 2]:\nMengerjakan tugas dalam RTM 2\n[PT+BM:(1+1) x\n(2 x 60’)",
+      "daring": "Interaksi virtual\nForum diskusi:\n[1x(2x50’)]",
+      "materi_pembelajaran": "Penggunaan SDH dalam pertanian serta upaya konservasinya oleh suku tertentu"
+    },
+    {
+      "minggu": "Minggu Ke-13",
+      "cpmk": "CPMK-1",
+      "sub_cpmk": "Sub-CMPK 1\nMengidentifikasi SDH yang digunakan untuk pengobatan, upacara adat, pertanian, sumber makanan perawatan ternak, pengawet dan pewarna alami, bahan serat, serta upaya konservasinya oleh suku tertentu, juga asupan makanan yang ditabukan dan dianjurkan",
+      "indikator": "Ketepatan mengindentifikasi SDH yang digunakan sebagai sumber makanan oleh suku tertentu",
+      "komponen_penilaian": "Partisipasi dalam kelompok dan forum diskusi\nRTM 2: Penggunaan SDH secara tradisional oleh suku tertentu",
+      "bobot": "-",
+      "luring": "[RTM 2]:\nMengerjakan tugas dalam RTM 2\n[PT+BM:(1+1) x\n(2 x 60’)",
+      "daring": "Interaksi virtual\nForum diskusi:\n[1x(2x50’)]",
+      "materi_pembelajaran": "Penggunaan SDH sebagai sumber makanan serta upaya konservasinya oleh suku tertentu"
+    },
+    {
+      "minggu": "Minggu Ke-14",
+      "cpmk": "CPMK-1",
+      "sub_cpmk": "Sub-CMPK 1\nMengidentifikasi SDH yang digunakan untuk pengobatan, upacara adat, pertanian, sumber makanan perawatan ternak, pengawet dan pewarna alami, bahan serat, serta upaya konservasinya oleh suku tertentu, juga asupan makanan yang ditabukan dan dianjurkan",
+      "indikator": "Ketepatan mengindentifikasi SDH yang digunakan untuk pengawet dan pewarna alami, bahan serat oleh suku tertentu",
+      "komponen_penilaian": "Partisipasi dalam kelompok dan forum diskusi\nRTM 2: Penggunaan SDH secara tradisional oleh suku tertentu",
+      "bobot": "-",
+      "luring": "[RTM 2]:\nMengerjakan tugas dalam RTM 2\n[PT+BM:(1+1) x\n(2 x 60’)",
+      "daring": "Interaksi virtual\nForum diskusi:\n[1x(2x50’)]",
+      "materi_pembelajaran": "SDH yang digunakan untuk pengawet, pewarna alami, bahan serat serta upaya konservasinya"
+    },
+    {
+      "minggu": "Minggu Ke-15",
+      "cpmk": "CPMK-1",
+      "sub_cpmk": "Sub-CMPK 1\nMengidentifikasi SDH yang digunakan untuk pengobatan, upacara adat, pertanian, sumber makanan perawatan ternak, pengawet dan pewarna alami, bahan serat, serta upaya konservasinya oleh suku tertentu, juga asupan makanan yang ditabukan dan dianjurkan",
+      "indikator": "Ketepatan mengindentifikasi SDH yang digunakan untuk perawatan ternak oleh suku tertentu",
+      "komponen_penilaian": "Partisipasi dalam kelompok dan forum diskusi\nRTM 2: Penggunaan SDH secara tradisional oleh suku tertentu",
+      "bobot": "-",
+      "luring": "[RTM 2]:\nMengerjakan tugas dalam RTM 2\n[PT+BM:(1+1) x\n(2 x 60’)",
+      "daring": "Interaksi virtual\nForum diskusi:\n[1x(2x50’)]",
+      "materi_pembelajaran": "SDH yang digunakan untuk perawatan ternak, etnoagronomi, etnoveteriner, etnomikologi serta konservasinya"
+    },
+    {
+      "minggu": "Minggu Ke-16",
+      "cpmk": "CPMK-1",
+      "sub_cpmk": "Sub-CMPK 1\nMengidentifikasi SDH yang digunakan untuk pengobatan, upacara adat, pertanian, sumber makanan perawatan ternak, pengawet dan pewarna alami, bahan serat, serta upaya konservasinya oleh suku tertentu, juga asupan makanan yang ditabukan dan dianjurkan",
+      "indikator": "Ketepatan mengindentifikasi asupan yang dianjurkan dan ditabukan oleh suku tertentu",
+      "komponen_penilaian": "Partisipasi dalam kelompok dan forum diskusi\nRTM 2: Penggunaan SDH secara tradisional oleh suku tertentu",
+      "bobot": "-",
+      "luring": "[RTM 2]:\nMengerjakan tugas dalam RTM 2\n[PT+BM:(1+1) x\n(2 x 60’)",
+      "daring": "Interaksi virtual\nForum diskusi:\n[1x(2x50’)]",
+      "materi_pembelajaran": "Asupan yang dianjurkan dan ditabukan"
+    }
+  ]
+}
