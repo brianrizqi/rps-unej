@@ -15,7 +15,12 @@ import {
   ChevronDown,
   ChevronUp,
   ZoomIn,
-  ZoomOut
+  ZoomOut,
+  Sparkles,
+  Settings,
+  Key,
+  Cpu,
+  EyeOff
 } from 'lucide-react';
 import defaultTemplate from './defaultTemplate.json';
 import unejLogo from './assets/Logo Baku UNEJ 2020 Medium Res.png';
@@ -27,6 +32,14 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('form'); // 'form' or 'json'
   const [theme, setTheme] = useState('dark');
   const [zoom, setZoom] = useState(70); // default zoom to fit screen (70%)
+  
+  // AI Generator & UI States
+  const [editorMode, setEditorMode] = useState('brief'); // 'brief' or 'full'
+  const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY || '';
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationStep, setGenerationStep] = useState(0);
+  const [errorMsg, setErrorMsg] = useState('');
+  
   const [collapsedSections, setCollapsedSections] = useState({
     identitas: false,
     matakuliah: false,
@@ -66,6 +79,183 @@ export default function App() {
       setData(defaultTemplate);
       setJsonText(JSON.stringify(defaultTemplate, null, 2));
       setJsonError(null);
+    }
+  };
+
+  const handleGenerateAI = async () => {
+    if (!apiKey.trim()) {
+      alert("API Key OpenRouter tidak ditemukan. Harap tambahkan VITE_OPENROUTER_API_KEY di berkas .env Anda terlebih dahulu.");
+      return;
+    }
+
+    setIsGenerating(true);
+    setGenerationStep(0);
+    setErrorMsg('');
+
+    // Step simulation interval to give dynamic visual progress
+    const stepInterval = setInterval(() => {
+      setGenerationStep(prev => {
+        if (prev < 4) return prev + 1;
+        return prev;
+      });
+    }, 4500);
+
+    const userPrompt = `Anda adalah seorang ahli perancang kurikulum dan dosen senior di Universitas Jember.
+Tugas Anda adalah menyusun dokumen Rencana Pembelajaran Semester (RPS) lengkap berbasis Outcome-Based Education (OBE) untuk program studi dan mata kuliah berikut.
+
+INPUT DOKUMEN:
+- Universitas: UNIVERSITAS JEMBER
+- Program Studi: ${data.identitas.prodi}
+- Nama Mata Kuliah: ${data.matakuliah.nama}
+- Kode Mata Kuliah (MK): ${data.matakuliah.kode}
+- Rumpun MK: ${data.matakuliah.rumpun}
+- Bobot SKS: ${data.matakuliah.bobot}
+- Semester: ${data.matakuliah.semester}
+- Tanggal Penyusunan: ${data.matakuliah.tanggal_penyusunan}
+- Dosen Pengembang RPS: ${data.otorisasi.dosen_pengembang}
+- Koordinator RMK: ${data.otorisasi.koordinator_rmk}
+- Koordinator Program Studi (Koprodi): ${data.otorisasi.kaprodi}
+- CPL - Prodi yang dibebankan pada MK:
+${JSON.stringify(data.capaian_pembelajaran.cpl_prodi, null, 2)}
+
+Silakan lengkapi seluruh field lainnya dalam dokumen RPS ini dan kembalikan data dalam format JSON murni yang sesuai persis dengan struktur skema JSON berikut. Kembangkan materi kuliah dan silabus dengan sangat berbobot, akademis, detail, dan profesional:
+
+{
+  "identitas": {
+    "universitas": "UNIVERSITAS JEMBER",
+    "fakultas": "FAKULTAS ILMU KOMPUTER",
+    "prodi": "${data.identitas.prodi}",
+    "kode_dokumen": "Form PP-2"
+  },
+  "matakuliah": {
+    "nama": "${data.matakuliah.nama}",
+    "kode": "${data.matakuliah.kode}",
+    "rumpun": "${data.matakuliah.rumpun}",
+    "bobot": "${data.matakuliah.bobot}",
+    "semester": "${data.matakuliah.semester}",
+    "tanggal_penyusunan": "${data.matakuliah.tanggal_penyusunan}"
+  },
+  "otorisasi": {
+    "dosen_pengembang": "${data.otorisasi.dosen_pengembang}",
+    "koordinator_rmk": "${data.otorisasi.koordinator_rmk}",
+    "kaprodi": "${data.otorisasi.kaprodi}"
+  },
+  "capaian_pembelajaran": {
+    "cpl_prodi": ${JSON.stringify(data.capaian_pembelajaran.cpl_prodi)},
+    "cpmk": [
+      // Buat 3 sampai 4 CPMK yang sangat relevan dengan Nama Mata Kuliah dan mendukung CPL prodi di atas.
+      // Format: { "kode": "CPMK-1", "deskripsi": "Deskripsi kemampuan..." }
+    ],
+    "pemetaan_cpl_cpmk": [
+      // Petakan setiap CPMK ke CPL yang sesuai. Berikan detail Sub-CPMK.
+      // Format: { "cpl": "KODE_CPL_SAJA (misal 'CPL-6')", "cpmk": "KODE_CPMK_SAJA (misal 'CPMK-1')", "sub_cpmk": "Sub-CPMK spesifik..." }
+    ]
+  },
+  "deskripsi_singkat": "Tuliskan deskripsi singkat mata kuliah ini dalam 2-3 kalimat akademis yang profesional.",
+  "materi_pembelajaran": [
+    // Buat daftar topik pokok bahasan pembelajaran (minimal 6-9 topik)
+  ],
+  "metode_penilaian": [
+    // Buat 4-5 komponen penilaian yang logis (tugas, kuis, UTS, UAS, partisipasi) dengan persentase yang jika dijumlahkan bernilai persis 100.
+    // CPMK di sini adalah array boolean berukuran 3 yang menandai kaitan dengan CPMK-1, CPMK-2, CPMK-3.
+    // Format: { "komponen": "Tugas: ...", "persentase": 15, "cpmk": [true, false, false], "media": "LKM/RTM..." }
+  ],
+  "pustaka": {
+    "utama": [
+      // Daftar pustaka utama berupa buku referensi asli yang terkenal dan relevan dengan topik mata kuliah (minimal 3 buku, sertakan nama penulis, tahun, judul buku, penerbit).
+    ],
+    "pendukung": [
+      // Minimal 1-2 pustaka pendukung (jurnal, artikel ilmiah, atau buku penunjang).
+    ]
+  },
+  "media_pembelajaran": {
+    "software": [
+      // Software yang relevan untuk perkuliahan (misal IDE, browser, e-learning UNEJ, dll.)
+    ],
+    "hardware": [
+      // Hardware (LCD, Laptop, dll.)
+    ]
+  },
+  "team_teaching": [
+    "${data.otorisasi.dosen_pengembang}"
+  ],
+  "matakuliah_prasyarat": "-",
+  "rencana_mingguan": [
+    // Buat silabus perkuliahan lengkap untuk 16 MINGGU! (Minggu ke-1 sampai Minggu ke-16)
+    // Berikan detail akademis yang sangat lengkap dan tidak disingkat.
+    // Minggu ke-8 harus berupa UTS (Evaluasi Tengah Semester) dan Minggu ke-16 berupa UAS (Evaluasi Akhir Semester).
+    // Format tiap objek minggu:
+    // {
+    //   "minggu": "Minggu Ke-1", // sampai Minggu Ke-16
+    //   "cpmk": "CPMK-1", // pilih salah satu CPMK yang sesuai
+    //   "sub_cpmk": "Sub-CPMK untuk minggu ini...",
+    //   "indikator": "Indikator ketepatan...",
+    //   "komponen_penilaian": "Komponen atau instrumen...",
+    //   "bobot": "5%" // persentase bobot atau "-" jika digabungkan
+    //   "luring": "Deskripsi bentuk pembelajaran tatap muka/luring...",
+    //   "daring": "Deskripsi bentuk pembelajaran daring...",
+    //   "materi_pembelajaran": "Materi bahasan minggu ini..."
+    // }
+  ]
+}
+
+Harap berikan respons HANYA berupa objek JSON yang valid dan lengkap tanpa markdown block (seperti \`\`\`json) atau teks pengantar/penutup apapun agar dapat di-parse langsung.`;
+
+    try {
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`,
+          "HTTP-Referer": "https://github.com/brianrizqi/rps",
+          "X-Title": "RPS UNEJ Generator"
+        },
+        body: JSON.stringify({
+          model: "openai/gpt-4o-mini",
+          response_format: { type: "json_object" },
+          messages: [
+            {
+              role: "system",
+              content: "Anda adalah asisten kurikulum akademik perguruan tinggi di Indonesia. Anda bertugas menyusun RPS lengkap berbasis standar OBE (Outcome Based Education) dan BAN-PT. Setiap data output harus berupa JSON yang sangat valid dan lengkap."
+            },
+            {
+              role: "user",
+              content: userPrompt
+            }
+          ],
+          temperature: 0.7
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      }
+
+      const resData = await response.json();
+      const choiceContent = resData.choices[0]?.message?.content;
+      if (!choiceContent) {
+        throw new Error("Gagal menerima hasil dari AI.");
+      }
+
+      const parsedData = JSON.parse(choiceContent);
+      
+      // Update UI state
+      setData(parsedData);
+      setJsonText(JSON.stringify(parsedData, null, 2));
+      setJsonError(null);
+      setGenerationStep(5); // Complete!
+      setActiveTab('json'); // Switch to JSON Editor automatically!
+      
+      setTimeout(() => {
+        setIsGenerating(false);
+      }, 1000);
+
+    } catch (err) {
+      console.error(err);
+      setErrorMsg(err.message || "Terjadi kesalahan koneksi.");
+      setIsGenerating(false);
+    } finally {
+      clearInterval(stepInterval);
     }
   };
 
@@ -274,34 +464,36 @@ export default function App() {
                 </div>
               </div>
             ) : (
-              <div className="space-y-6">
-                
-                {/* 1. IDENTITAS DOKUMEN */}
-                <div className="border border-slate-700 rounded-lg p-4 mb-4 bg-slate-900/30">
-                  <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('identitas')}>
-                    <span className="form-section-title mb-0"><FileText size={18} /> 1. Identitas Dokumen</span>
-                    {collapsedSections.identitas ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
-                  </div>
-                  {!collapsedSections.identitas && (
-                    <div className="mt-4 space-y-4">
-                      <div className="form-group">
-                        <label>Universitas</label>
-                        <input 
-                          type="text" 
-                          className="form-input" 
-                          value={data.identitas.universitas} 
-                          onChange={(e) => updateField('identitas', 'universitas', e.target.value)} 
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label>Fakultas</label>
-                        <input 
-                          type="text" 
-                          className="form-input" 
-                          value={data.identitas.fakultas} 
-                          onChange={(e) => updateField('identitas', 'fakultas', e.target.value)} 
-                        />
-                      </div>
+              <div>
+                {/* Mode Switcher */}
+                <div className="mode-switcher-container">
+                  <button 
+                    className={`mode-switch-btn ${editorMode === 'brief' ? 'active' : ''}`}
+                    onClick={() => setEditorMode('brief')}
+                  >
+                    <Sparkles size={14} /> Input Ringkas (AI)
+                  </button>
+                  <button 
+                    className={`mode-switch-btn ${editorMode === 'full' ? 'active' : ''}`}
+                    onClick={() => setEditorMode('full')}
+                  >
+                    <List size={14} /> Formulir Lengkap
+                  </button>
+                </div>
+
+                {editorMode === 'brief' ? (
+                  <div className="space-y-6">
+                    <div className="form-brief-notice">
+                      <Cpu size={18} className="text-blue-400 shrink-0 mt-0.5" />
+                      <span className="form-brief-notice-text">
+                        Cukup isi 11 parameter utama di bawah ini, lalu AI akan menyusun Capaian Pembelajaran (CPMK), pustaka relevan, metode evaluasi, dan silabus lengkap 16 minggu pembelajaran secara otomatis!
+                      </span>
+                    </div>
+
+                    {/* 1. IDENTITAS & MATA KULIAH */}
+                    <div className="border border-slate-700 rounded-lg p-4 bg-slate-900/30 space-y-4">
+                      <h3 className="form-section-title mb-0"><Sparkles size={16} /> 1. Parameter Utama MK</h3>
+                      
                       <div className="form-group">
                         <label>Program Studi</label>
                         <input 
@@ -309,39 +501,22 @@ export default function App() {
                           className="form-input" 
                           value={data.identitas.prodi} 
                           onChange={(e) => updateField('identitas', 'prodi', e.target.value)} 
+                          placeholder="Program Studi Magister Ilmu Komputer"
                         />
                       </div>
+
                       <div className="form-group">
-                        <label>Kode Dokumen</label>
+                        <label>Nama Mata Kuliah</label>
                         <input 
                           type="text" 
                           className="form-input" 
-                          value={data.identitas.kode_dokumen} 
-                          onChange={(e) => updateField('identitas', 'kode_dokumen', e.target.value)} 
+                          value={data.matakuliah.nama} 
+                          onChange={(e) => updateField('matakuliah', 'nama', e.target.value)} 
+                          placeholder="Metodologi Penelitian"
                         />
                       </div>
-                    </div>
-                  )}
-                </div>
 
-                {/* 2. MATA KULIAH */}
-                <div className="border border-slate-700 rounded-lg p-4 mb-4 bg-slate-900/30">
-                  <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('matakuliah')}>
-                    <span className="form-section-title mb-0"><List size={18} /> 2. Detail Mata Kuliah</span>
-                    {collapsedSections.matakuliah ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
-                  </div>
-                  {!collapsedSections.matakuliah && (
-                    <div className="mt-4 space-y-4">
                       <div className="form-row">
-                        <div className="form-group">
-                          <label>Nama Mata Kuliah</label>
-                          <input 
-                            type="text" 
-                            className="form-input" 
-                            value={data.matakuliah.nama} 
-                            onChange={(e) => updateField('matakuliah', 'nama', e.target.value)} 
-                          />
-                        </div>
                         <div className="form-group">
                           <label>Kode MK</label>
                           <input 
@@ -349,10 +524,9 @@ export default function App() {
                             className="form-input" 
                             value={data.matakuliah.kode} 
                             onChange={(e) => updateField('matakuliah', 'kode', e.target.value)} 
+                            placeholder="KPB1704"
                           />
                         </div>
-                      </div>
-                      <div className="form-row">
                         <div className="form-group">
                           <label>Rumpun MK</label>
                           <input 
@@ -360,8 +534,12 @@ export default function App() {
                             className="form-input" 
                             value={data.matakuliah.rumpun} 
                             onChange={(e) => updateField('matakuliah', 'rumpun', e.target.value)} 
+                            placeholder="WAJIB / PENGEMBANGAN DIRI"
                           />
                         </div>
+                      </div>
+
+                      <div className="form-row">
                         <div className="form-group">
                           <label>Bobot SKS</label>
                           <input 
@@ -369,10 +547,9 @@ export default function App() {
                             className="form-input" 
                             value={data.matakuliah.bobot} 
                             onChange={(e) => updateField('matakuliah', 'bobot', e.target.value)} 
+                            placeholder="T=3, P=0"
                           />
                         </div>
-                      </div>
-                      <div className="form-row">
                         <div className="form-group">
                           <label>Semester</label>
                           <input 
@@ -380,30 +557,27 @@ export default function App() {
                             className="form-input" 
                             value={data.matakuliah.semester} 
                             onChange={(e) => updateField('matakuliah', 'semester', e.target.value)} 
-                          />
-                        </div>
-                        <div className="form-group">
-                          <label>Tanggal Penyusunan</label>
-                          <input 
-                            type="text" 
-                            className="form-input" 
-                            value={data.matakuliah.tanggal_penyusunan} 
-                            onChange={(e) => updateField('matakuliah', 'tanggal_penyusunan', e.target.value)} 
+                            placeholder="1"
                           />
                         </div>
                       </div>
-                    </div>
-                  )}
-                </div>
 
-                {/* 3. OTORISASI */}
-                <div className="border border-slate-700 rounded-lg p-4 mb-4 bg-slate-900/30">
-                  <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('otorisasi')}>
-                    <span className="form-section-title mb-0"><FileText size={18} /> 3. Otorisasi Pengesahan</span>
-                    {collapsedSections.otorisasi ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
-                  </div>
-                  {!collapsedSections.otorisasi && (
-                    <div className="mt-4 space-y-4">
+                      <div className="form-group">
+                        <label>Tanggal Penyusunan</label>
+                        <input 
+                          type="text" 
+                          className="form-input" 
+                          value={data.matakuliah.tanggal_penyusunan} 
+                          onChange={(e) => updateField('matakuliah', 'tanggal_penyusunan', e.target.value)} 
+                          placeholder="20 Agustus 2026"
+                        />
+                      </div>
+                    </div>
+
+                    {/* 2. TIM PENGESAH / OTORISASI */}
+                    <div className="border border-slate-700 rounded-lg p-4 bg-slate-900/30 space-y-4">
+                      <h3 className="form-section-title mb-0"><Sparkles size={16} /> 2. Otorisasi Pengesahan</h3>
+                      
                       <div className="form-group">
                         <label>Dosen Pengembang RPS</label>
                         <input 
@@ -411,8 +585,10 @@ export default function App() {
                           className="form-input" 
                           value={data.otorisasi.dosen_pengembang} 
                           onChange={(e) => updateField('otorisasi', 'dosen_pengembang', e.target.value)} 
+                          placeholder="Prof. Slamin"
                         />
                       </div>
+
                       <div className="form-group">
                         <label>Koordinator RMK</label>
                         <input 
@@ -420,8 +596,10 @@ export default function App() {
                           className="form-input" 
                           value={data.otorisasi.koordinator_rmk} 
                           onChange={(e) => updateField('otorisasi', 'koordinator_rmk', e.target.value)} 
+                          placeholder="Prof. Slamin"
                         />
                       </div>
+
                       <div className="form-group">
                         <label>Koordinator Program Studi (Koprodi)</label>
                         <input 
@@ -429,34 +607,27 @@ export default function App() {
                           className="form-input" 
                           value={data.otorisasi.kaprodi} 
                           onChange={(e) => updateField('otorisasi', 'kaprodi', e.target.value)} 
+                          placeholder="Dr. Dwiretno Istiyadi Swasono, M.Kom"
                         />
                       </div>
                     </div>
-                  )}
-                </div>
 
-                {/* 4. CAPAIAN PEMBELAJARAN (CP) */}
-                <div className="border border-slate-700 rounded-lg p-4 mb-4 bg-slate-900/30">
-                  <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('capaian')}>
-                    <span className="form-section-title mb-0"><List size={18} /> 4. Capaian Pembelajaran (CP)</span>
-                    {collapsedSections.capaian ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
-                  </div>
-                  {!collapsedSections.capaian && (
-                    <div className="mt-4 space-y-6">
+                    {/* 3. CAPAIAN PEMBELAJARAN (CPL) */}
+                    <div className="border border-slate-700 rounded-lg p-4 bg-slate-900/30 space-y-4">
+                      <h3 className="form-section-title mb-0"><Sparkles size={16} /> 3. CPL yang Dibebankan</h3>
                       
-                      {/* CPL */}
                       <div>
-                        <h4 className="text-sm font-semibold mb-2 text-blue-400">CPL - Prodi yang dibebankan pada MK</h4>
+                        <label className="text-[10px] text-slate-400 font-bold block mb-2">DAFTAR CPL PRODI UNTUK MATAKULIAH INI</label>
                         {data.capaian_pembelajaran.cpl_prodi.map((cpl, idx) => (
-                          <div key={idx} className="repeating-item">
+                          <div key={idx} className="repeating-item mb-3">
                             <button className="delete-btn" onClick={() => removeCPL(idx)}>
-                              <Trash2 size={16} />
+                              <Trash2 size={14} />
                             </button>
                             <div className="form-group mb-2">
                               <label>Kode CPL</label>
                               <input 
                                 type="text" 
-                                className="form-input py-1" 
+                                className="form-input py-1 text-xs" 
                                 value={cpl.kode} 
                                 onChange={(e) => {
                                   const updated = { ...data };
@@ -464,12 +635,13 @@ export default function App() {
                                   setData(updated);
                                   setJsonText(JSON.stringify(updated, null, 2));
                                 }}
+                                placeholder="CPL-8"
                               />
                             </div>
                             <div className="form-group mb-0">
-                              <label>Deskripsi</label>
+                              <label>Deskripsi CPL</label>
                               <textarea 
-                                className="form-textarea min-h-[60px] py-1" 
+                                className="form-textarea min-h-[50px] py-1 text-xs" 
                                 value={cpl.deskripsi}
                                 onChange={(e) => {
                                   const updated = { ...data };
@@ -477,477 +649,701 @@ export default function App() {
                                   setData(updated);
                                   setJsonText(JSON.stringify(updated, null, 2));
                                 }}
+                                placeholder="Mahasiswa mampu mengaplikasikan metodologi penelitian..."
                               />
                             </div>
                           </div>
                         ))}
-                        <button className="add-btn" onClick={addCPL}><Plus size={14} /> Tambah CPL</button>
-                      </div>
-
-                      {/* CPMK */}
-                      <div>
-                        <h4 className="text-sm font-semibold mb-2 text-blue-400">CPMK (Capaian Pembelajaran Matakuliah)</h4>
-                        {data.capaian_pembelajaran.cpmk.map((cpmk, idx) => (
-                          <div key={idx} className="repeating-item">
-                            <button className="delete-btn" onClick={() => removeCPMK(idx)}>
-                              <Trash2 size={16} />
-                            </button>
-                            <div className="form-group mb-2">
-                              <label>Kode CPMK</label>
-                              <input 
-                                type="text" 
-                                className="form-input py-1" 
-                                value={cpmk.kode} 
-                                onChange={(e) => {
-                                  const updated = { ...data };
-                                  updated.capaian_pembelajaran.cpmk[idx].kode = e.target.value;
-                                  setData(updated);
-                                  setJsonText(JSON.stringify(updated, null, 2));
-                                }}
-                              />
-                            </div>
-                            <div className="form-group mb-0">
-                              <label>Deskripsi</label>
-                              <textarea 
-                                className="form-textarea min-h-[60px] py-1" 
-                                value={cpmk.deskripsi}
-                                onChange={(e) => {
-                                  const updated = { ...data };
-                                  updated.capaian_pembelajaran.cpmk[idx].deskripsi = e.target.value;
-                                  setData(updated);
-                                  setJsonText(JSON.stringify(updated, null, 2));
-                                }}
-                              />
-                            </div>
-                          </div>
-                        ))}
-                        <button className="add-btn" onClick={addCPMK}><Plus size={14} /> Tambah CPMK</button>
-                      </div>
-
-                      {/* Pemetaan */}
-                      <div>
-                        <h4 className="text-sm font-semibold mb-2 text-blue-400">Pemetaan CPL, CPMK & Sub-CPMK</h4>
-                        {data.capaian_pembelajaran.pemetaan_cpl_cpmk.map((map, idx) => (
-                          <div key={idx} className="repeating-item">
-                            <button className="delete-btn" onClick={() => removePemetaan(idx)}>
-                              <Trash2 size={16} />
-                            </button>
-                            <div className="form-row mb-2">
-                              <div className="form-group mb-0">
-                                <label>CPL</label>
-                                <input 
-                                  type="text" 
-                                  className="form-input py-1" 
-                                  value={map.cpl} 
-                                  onChange={(e) => {
-                                    const updated = { ...data };
-                                    updated.capaian_pembelajaran.pemetaan_cpl_cpmk[idx].cpl = e.target.value;
-                                    setData(updated);
-                                    setJsonText(JSON.stringify(updated, null, 2));
-                                  }}
-                                />
-                              </div>
-                              <div className="form-group mb-0">
-                                <label>CPMK</label>
-                                <input 
-                                  type="text" 
-                                  className="form-input py-1" 
-                                  value={map.cpmk} 
-                                  onChange={(e) => {
-                                    const updated = { ...data };
-                                    updated.capaian_pembelajaran.pemetaan_cpl_cpmk[idx].cpmk = e.target.value;
-                                    setData(updated);
-                                    setJsonText(JSON.stringify(updated, null, 2));
-                                  }}
-                                />
-                              </div>
-                            </div>
-                            <div className="form-group mb-0">
-                              <label>Sub-CPMK</label>
-                              <textarea 
-                                className="form-textarea min-h-[60px] py-1" 
-                                value={map.sub_cpmk}
-                                onChange={(e) => {
-                                  const updated = { ...data };
-                                  updated.capaian_pembelajaran.pemetaan_cpl_cpmk[idx].sub_cpmk = e.target.value;
-                                  setData(updated);
-                                  setJsonText(JSON.stringify(updated, null, 2));
-                                }}
-                              />
-                            </div>
-                          </div>
-                        ))}
-                        <button className="add-btn" onClick={addPemetaan}><Plus size={14} /> Tambah Pemetaan</button>
-                      </div>
-
-                    </div>
-                  )}
-                </div>
-
-                {/* 5. DESKRIPSI SINGKAT & MATERI */}
-                <div className="border border-slate-700 rounded-lg p-4 mb-4 bg-slate-900/30">
-                  <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('deskripsi')}>
-                    <span className="form-section-title mb-0"><FileText size={18} /> 5. Deskripsi Singkat & Pokok Bahasan</span>
-                    {collapsedSections.deskripsi ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
-                  </div>
-                  {!collapsedSections.deskripsi && (
-                    <div className="mt-4 space-y-4">
-                      <div className="form-group">
-                        <label>Deskripsi Singkat MK</label>
-                        <textarea 
-                          className="form-textarea" 
-                          value={data.deskripsi_singkat} 
-                          onChange={(e) => updateField('deskripsi_singkat', null, e.target.value)} 
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label>Materi Pembelajaran / Pokok Bahasan (Pisahkan per baris)</label>
-                        <textarea 
-                          className="form-textarea min-h-[140px]" 
-                          value={data.materi_pembelajaran.join('\n')} 
-                          onChange={(e) => updateField('materi_pembelajaran', null, e.target.value.split('\n'))} 
-                        />
+                        <button className="add-btn py-1.5 text-xs" onClick={addCPL}>
+                          <Plus size={12} /> Tambah Parameter CPL
+                        </button>
                       </div>
                     </div>
-                  )}
-                </div>
 
-                {/* 6. METODE PENILAIAN */}
-                <div className="border border-slate-700 rounded-lg p-4 mb-4 bg-slate-900/30">
-                  <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('metode')}>
-                    <span className="form-section-title mb-0"><List size={18} /> 6. Metode Penilaian</span>
-                    {collapsedSections.metode ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
+                    {/* AI GENERATE ACTION */}
+                    <button 
+                      className="btn-ai-generate mt-6"
+                      onClick={handleGenerateAI}
+                      disabled={isGenerating || !apiKey.trim()}
+                    >
+                      <Sparkles size={18} /> {isGenerating ? "Menganalisis & Menyusun..." : "Generate RPS dengan AI ✨"}
+                    </button>
                   </div>
-                  {!collapsedSections.metode && (
-                    <div className="mt-4 space-y-4">
-                      {data.metode_penilaian.map((item, idx) => (
-                        <div key={idx} className="repeating-item">
-                          <div className="form-group mb-2">
-                            <label>Komponen Penilaian</label>
+                ) : (
+                  <div className="space-y-6">
+                    {/* 1. IDENTITAS DOKUMEN */}
+                    <div className="border border-slate-700 rounded-lg p-4 mb-4 bg-slate-900/30">
+                      <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('identitas')}>
+                        <span className="form-section-title mb-0"><FileText size={18} /> 1. Identitas Dokumen</span>
+                        {collapsedSections.identitas ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
+                      </div>
+                      {!collapsedSections.identitas && (
+                        <div className="mt-4 space-y-4">
+                          <div className="form-group">
+                            <label>Universitas</label>
                             <input 
                               type="text" 
-                              className="form-input py-1" 
-                              value={item.komponen}
-                              onChange={(e) => {
-                                const updated = { ...data };
-                                updated.metode_penilaian[idx].komponen = e.target.value;
-                                setData(updated);
-                                setJsonText(JSON.stringify(updated, null, 2));
-                              }}
+                              className="form-input" 
+                              value={data.identitas.universitas} 
+                              onChange={(e) => updateField('identitas', 'universitas', e.target.value)} 
                             />
                           </div>
-                          <div className="form-row mb-2">
-                            <div className="form-group mb-0">
-                              <label>Persentase (%)</label>
-                              <input 
-                                type="number" 
-                                className="form-input py-1" 
-                                value={item.persentase}
-                                onChange={(e) => {
-                                  const updated = { ...data };
-                                  updated.metode_penilaian[idx].persentase = parseInt(e.target.value) || 0;
-                                  setData(updated);
-                                  setJsonText(JSON.stringify(updated, null, 2));
-                                }}
-                              />
-                            </div>
-                            <div className="form-group mb-0">
-                              <label>Media</label>
+                          <div className="form-group">
+                            <label>Fakultas</label>
+                            <input 
+                              type="text" 
+                              className="form-input" 
+                              value={data.identitas.fakultas} 
+                              onChange={(e) => updateField('identitas', 'fakultas', e.target.value)} 
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label>Program Studi</label>
+                            <input 
+                              type="text" 
+                              className="form-input" 
+                              value={data.identitas.prodi} 
+                              onChange={(e) => updateField('identitas', 'prodi', e.target.value)} 
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label>Kode Dokumen</label>
+                            <input 
+                              type="text" 
+                              className="form-input" 
+                              value={data.identitas.kode_dokumen} 
+                              onChange={(e) => updateField('identitas', 'kode_dokumen', e.target.value)} 
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 2. MATA KULIAH */}
+                    <div className="border border-slate-700 rounded-lg p-4 mb-4 bg-slate-900/30">
+                      <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('matakuliah')}>
+                        <span className="form-section-title mb-0"><List size={18} /> 2. Detail Mata Kuliah</span>
+                        {collapsedSections.matakuliah ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
+                      </div>
+                      {!collapsedSections.matakuliah && (
+                        <div className="mt-4 space-y-4">
+                          <div className="form-row">
+                            <div className="form-group">
+                              <label>Nama Mata Kuliah</label>
                               <input 
                                 type="text" 
-                                className="form-input py-1" 
-                                value={item.media}
-                                onChange={(e) => {
-                                  const updated = { ...data };
-                                  updated.metode_penilaian[idx].media = e.target.value;
-                                  setData(updated);
-                                  setJsonText(JSON.stringify(updated, null, 2));
-                                }}
+                                className="form-input" 
+                                value={data.matakuliah.nama} 
+                                onChange={(e) => updateField('matakuliah', 'nama', e.target.value)} 
+                              />
+                            </div>
+                            <div className="form-group">
+                              <label>Kode MK</label>
+                              <input 
+                                type="text" 
+                                className="form-input" 
+                                value={data.matakuliah.kode} 
+                                onChange={(e) => updateField('matakuliah', 'kode', e.target.value)} 
                               />
                             </div>
                           </div>
-                          <div className="form-group mb-0">
-                            <label className="text-[10px]">Kaitan dengan CPMK (Pilih CPMK 1, 2, 3)</label>
-                            <div className="flex gap-4 mt-1">
-                              {[0, 1, 2].map(cIdx => (
-                                <label key={cIdx} className="flex items-center gap-1.5 cursor-pointer text-xs">
+                          <div className="form-row">
+                            <div className="form-group">
+                              <label>Rumpun MK</label>
+                              <input 
+                                type="text" 
+                                className="form-input" 
+                                value={data.matakuliah.rumpun} 
+                                onChange={(e) => updateField('matakuliah', 'rumpun', e.target.value)} 
+                              />
+                            </div>
+                            <div className="form-group">
+                              <label>Bobot SKS</label>
+                              <input 
+                                type="text" 
+                                className="form-input" 
+                                value={data.matakuliah.bobot} 
+                                onChange={(e) => updateField('matakuliah', 'bobot', e.target.value)} 
+                              />
+                            </div>
+                          </div>
+                          <div className="form-row">
+                            <div className="form-group">
+                              <label>Semester</label>
+                              <input 
+                                type="text" 
+                                className="form-input" 
+                                value={data.matakuliah.semester} 
+                                onChange={(e) => updateField('matakuliah', 'semester', e.target.value)} 
+                              />
+                            </div>
+                            <div className="form-group">
+                              <label>Tanggal Penyusunan</label>
+                              <input 
+                                type="text" 
+                                className="form-input" 
+                                value={data.matakuliah.tanggal_penyusunan} 
+                                onChange={(e) => updateField('matakuliah', 'tanggal_penyusunan', e.target.value)} 
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 3. OTORISASI */}
+                    <div className="border border-slate-700 rounded-lg p-4 mb-4 bg-slate-900/30">
+                      <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('otorisasi')}>
+                        <span className="form-section-title mb-0"><FileText size={18} /> 3. Otorisasi Pengesahan</span>
+                        {collapsedSections.otorisasi ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
+                      </div>
+                      {!collapsedSections.otorisasi && (
+                        <div className="mt-4 space-y-4">
+                          <div className="form-group">
+                            <label>Dosen Pengembang RPS</label>
+                            <input 
+                              type="text" 
+                              className="form-input" 
+                              value={data.otorisasi.dosen_pengembang} 
+                              onChange={(e) => updateField('otorisasi', 'dosen_pengembang', e.target.value)} 
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label>Koordinator RMK</label>
+                            <input 
+                              type="text" 
+                              className="form-input" 
+                              value={data.otorisasi.koordinator_rmk} 
+                              onChange={(e) => updateField('otorisasi', 'koordinator_rmk', e.target.value)} 
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label>Koordinator Program Studi (Koprodi)</label>
+                            <input 
+                              type="text" 
+                              className="form-input" 
+                              value={data.otorisasi.kaprodi} 
+                              onChange={(e) => updateField('otorisasi', 'kaprodi', e.target.value)} 
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 4. CAPAIAN PEMBELAJARAN (CP) */}
+                    <div className="border border-slate-700 rounded-lg p-4 mb-4 bg-slate-900/30">
+                      <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('capaian')}>
+                        <span className="form-section-title mb-0"><List size={18} /> 4. Capaian Pembelajaran (CP)</span>
+                        {collapsedSections.capaian ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
+                      </div>
+                      {!collapsedSections.capaian && (
+                        <div className="mt-4 space-y-6">
+                          
+                          {/* CPL */}
+                          <div>
+                            <h4 className="text-sm font-semibold mb-2 text-blue-400">CPL - Prodi yang dibebankan pada MK</h4>
+                            {data.capaian_pembelajaran.cpl_prodi.map((cpl, idx) => (
+                              <div key={idx} className="repeating-item">
+                                <button className="delete-btn" onClick={() => removeCPL(idx)}>
+                                  <Trash2 size={16} />
+                                </button>
+                                <div className="form-group mb-2">
+                                  <label>Kode CPL</label>
                                   <input 
-                                    type="checkbox"
-                                    checked={item.cpmk[cIdx]}
+                                    type="text" 
+                                    className="form-input py-1" 
+                                    value={cpl.kode} 
                                     onChange={(e) => {
                                       const updated = { ...data };
-                                      updated.metode_penilaian[idx].cpmk[cIdx] = e.target.checked;
+                                      updated.capaian_pembelajaran.cpl_prodi[idx].kode = e.target.value;
                                       setData(updated);
                                       setJsonText(JSON.stringify(updated, null, 2));
                                     }}
                                   />
-                                  CPMK-{cIdx+1}
-                                </label>
-                              ))}
-                            </div>
+                                </div>
+                                <div className="form-group mb-0">
+                                  <label>Deskripsi</label>
+                                  <textarea 
+                                    className="form-textarea min-h-[60px] py-1" 
+                                    value={cpl.deskripsi}
+                                    onChange={(e) => {
+                                      const updated = { ...data };
+                                      updated.capaian_pembelajaran.cpl_prodi[idx].deskripsi = e.target.value;
+                                      setData(updated);
+                                      setJsonText(JSON.stringify(updated, null, 2));
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                            <button className="add-btn" onClick={addCPL}><Plus size={14} /> Tambah CPL</button>
+                          </div>
+
+                          {/* CPMK */}
+                          <div>
+                            <h4 className="text-sm font-semibold mb-2 text-blue-400">CPMK (Capaian Pembelajaran Matakuliah)</h4>
+                            {data.capaian_pembelajaran.cpmk.map((cpmk, idx) => (
+                              <div key={idx} className="repeating-item">
+                                <button className="delete-btn" onClick={() => removeCPMK(idx)}>
+                                  <Trash2 size={16} />
+                                </button>
+                                <div className="form-group mb-2">
+                                  <label>Kode CPMK</label>
+                                  <input 
+                                    type="text" 
+                                    className="form-input py-1" 
+                                    value={cpmk.kode} 
+                                    onChange={(e) => {
+                                      const updated = { ...data };
+                                      updated.capaian_pembelajaran.cpmk[idx].kode = e.target.value;
+                                      setData(updated);
+                                      setJsonText(JSON.stringify(updated, null, 2));
+                                    }}
+                                  />
+                                </div>
+                                <div className="form-group mb-0">
+                                  <label>Deskripsi</label>
+                                  <textarea 
+                                    className="form-textarea min-h-[60px] py-1" 
+                                    value={cpmk.deskripsi}
+                                    onChange={(e) => {
+                                      const updated = { ...data };
+                                      updated.capaian_pembelajaran.cpmk[idx].deskripsi = e.target.value;
+                                      setData(updated);
+                                      setJsonText(JSON.stringify(updated, null, 2));
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                            <button className="add-btn" onClick={addCPMK}><Plus size={14} /> Tambah CPMK</button>
+                          </div>
+
+                          {/* Pemetaan */}
+                          <div>
+                            <h4 className="text-sm font-semibold mb-2 text-blue-400">Pemetaan CPL, CPMK & Sub-CPMK</h4>
+                            {data.capaian_pembelajaran.pemetaan_cpl_cpmk.map((map, idx) => (
+                              <div key={idx} className="repeating-item">
+                                <button className="delete-btn" onClick={() => removePemetaan(idx)}>
+                                  <Trash2 size={16} />
+                                </button>
+                                <div className="form-row mb-2">
+                                  <div className="form-group mb-0">
+                                    <label>CPL</label>
+                                    <input 
+                                      type="text" 
+                                      className="form-input py-1" 
+                                      value={map.cpl} 
+                                      onChange={(e) => {
+                                        const updated = { ...data };
+                                        updated.capaian_pembelajaran.pemetaan_cpl_cpmk[idx].cpl = e.target.value;
+                                        setData(updated);
+                                        setJsonText(JSON.stringify(updated, null, 2));
+                                      }}
+                                    />
+                                  </div>
+                                  <div className="form-group mb-0">
+                                    <label>CPMK</label>
+                                    <input 
+                                      type="text" 
+                                      className="form-input py-1" 
+                                      value={map.cpmk} 
+                                      onChange={(e) => {
+                                        const updated = { ...data };
+                                        updated.capaian_pembelajaran.pemetaan_cpl_cpmk[idx].cpmk = e.target.value;
+                                        setData(updated);
+                                        setJsonText(JSON.stringify(updated, null, 2));
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                                <div className="form-group mb-0">
+                                  <label>Sub-CPMK</label>
+                                  <textarea 
+                                    className="form-textarea min-h-[60px] py-1" 
+                                    value={map.sub_cpmk}
+                                    onChange={(e) => {
+                                      const updated = { ...data };
+                                      updated.capaian_pembelajaran.pemetaan_cpl_cpmk[idx].sub_cpmk = e.target.value;
+                                      setData(updated);
+                                      setJsonText(JSON.stringify(updated, null, 2));
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                            <button className="add-btn" onClick={addPemetaan}><Plus size={14} /> Tambah Pemetaan</button>
+                          </div>
+
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 5. DESKRIPSI SINGKAT & MATERI */}
+                    <div className="border border-slate-700 rounded-lg p-4 mb-4 bg-slate-900/30">
+                      <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('deskripsi')}>
+                        <span className="form-section-title mb-0"><FileText size={18} /> 5. Deskripsi Singkat & Pokok Bahasan</span>
+                        {collapsedSections.deskripsi ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
+                      </div>
+                      {!collapsedSections.deskripsi && (
+                        <div className="mt-4 space-y-4">
+                          <div className="form-group">
+                            <label>Deskripsi Singkat MK</label>
+                            <textarea 
+                              className="form-textarea" 
+                              value={data.deskripsi_singkat} 
+                              onChange={(e) => updateField('deskripsi_singkat', null, e.target.value)} 
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label>Materi Pembelajaran / Pokok Bahasan (Pisahkan per baris)</label>
+                            <textarea 
+                              className="form-textarea min-h-[140px]" 
+                              value={data.materi_pembelajaran.join('\n')} 
+                              onChange={(e) => updateField('materi_pembelajaran', null, e.target.value.split('\n'))} 
+                            />
                           </div>
                         </div>
-                      ))}
+                      )}
                     </div>
-                  )}
-                </div>
 
-                {/* 7. DAFTAR PUSTAKA */}
-                <div className="border border-slate-700 rounded-lg p-4 mb-4 bg-slate-900/30">
-                  <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('pustaka')}>
-                    <span className="form-section-title mb-0"><FileText size={18} /> 7. Daftar Pustaka & Media</span>
-                    {collapsedSections.pustaka ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
-                  </div>
-                  {!collapsedSections.pustaka && (
-                    <div className="mt-4 space-y-4">
-                      <div>
-                        <h4 className="text-sm font-semibold mb-2 text-blue-400">Pustaka Utama</h4>
-                        {data.pustaka.utama.map((bk, idx) => (
-                          <div key={idx} className="flex items-center gap-2 mb-2">
+                    {/* 6. METODE PENILAIAN */}
+                    <div className="border border-slate-700 rounded-lg p-4 mb-4 bg-slate-900/30">
+                      <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('metode')}>
+                        <span className="form-section-title mb-0"><List size={18} /> 6. Metode Penilaian</span>
+                        {collapsedSections.metode ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
+                      </div>
+                      {!collapsedSections.metode && (
+                        <div className="mt-4 space-y-4">
+                          {data.metode_penilaian.map((item, idx) => (
+                            <div key={idx} className="repeating-item">
+                              <div className="form-group mb-2">
+                                <label>Komponen Penilaian</label>
+                                <input 
+                                  type="text" 
+                                  className="form-input py-1" 
+                                  value={item.komponen}
+                                  onChange={(e) => {
+                                    const updated = { ...data };
+                                    updated.metode_penilaian[idx].komponen = e.target.value;
+                                    setData(updated);
+                                    setJsonText(JSON.stringify(updated, null, 2));
+                                  }}
+                                />
+                              </div>
+                              <div className="form-row mb-2">
+                                <div className="form-group mb-0">
+                                  <label>Persentase (%)</label>
+                                  <input 
+                                    type="number" 
+                                    className="form-input py-1" 
+                                    value={item.persentase}
+                                    onChange={(e) => {
+                                      const updated = { ...data };
+                                      updated.metode_penilaian[idx].persentase = parseInt(e.target.value) || 0;
+                                      setData(updated);
+                                      setJsonText(JSON.stringify(updated, null, 2));
+                                    }}
+                                  />
+                                </div>
+                                <div className="form-group mb-0">
+                                  <label>Media</label>
+                                  <input 
+                                    type="text" 
+                                    className="form-input py-1" 
+                                    value={item.media}
+                                    onChange={(e) => {
+                                      const updated = { ...data };
+                                      updated.metode_penilaian[idx].media = e.target.value;
+                                      setData(updated);
+                                      setJsonText(JSON.stringify(updated, null, 2));
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div className="form-group mb-0">
+                                <label className="text-[10px]">Kaitan dengan CPMK (Pilih CPMK 1, 2, 3)</label>
+                                <div className="flex gap-4 mt-1">
+                                  {[0, 1, 2].map(cIdx => (
+                                    <label key={cIdx} className="flex items-center gap-1.5 cursor-pointer text-xs">
+                                      <input 
+                                        type="checkbox"
+                                        checked={item.cpmk[cIdx]}
+                                        onChange={(e) => {
+                                          const updated = { ...data };
+                                          updated.metode_penilaian[idx].cpmk[cIdx] = e.target.checked;
+                                          setData(updated);
+                                          setJsonText(JSON.stringify(updated, null, 2));
+                                        }}
+                                      />
+                                      CPMK-{cIdx+1}
+                                    </label>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 7. DAFTAR PUSTAKA */}
+                    <div className="border border-slate-700 rounded-lg p-4 mb-4 bg-slate-900/30">
+                      <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('pustaka')}>
+                        <span className="form-section-title mb-0"><FileText size={18} /> 7. Daftar Pustaka & Media</span>
+                        {collapsedSections.pustaka ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
+                      </div>
+                      {!collapsedSections.pustaka && (
+                        <div className="mt-4 space-y-4">
+                          <div>
+                            <h4 className="text-sm font-semibold mb-2 text-blue-400">Pustaka Utama</h4>
+                            {data.pustaka.utama.map((bk, idx) => (
+                              <div key={idx} className="flex items-center gap-2 mb-2">
+                                <input 
+                                  type="text" 
+                                  className="form-input flex-1 py-1.5" 
+                                  value={bk}
+                                  onChange={(e) => {
+                                    const updated = { ...data };
+                                    updated.pustaka.utama[idx] = e.target.value;
+                                    setData(updated);
+                                    setJsonText(JSON.stringify(updated, null, 2));
+                                  }}
+                                />
+                                <button className="text-red-400 p-1" onClick={() => removePustakaUtama(idx)}>
+                                  <Trash2 size={16} />
+                                </button>
+                              </div>
+                            ))}
+                            <button className="add-btn" onClick={addPustakaUtama}><Plus size={14} /> Tambah Buku Utama</button>
+                          </div>
+
+                          <div className="form-group mt-4">
+                            <label>Pustaka Pendukung (Pisahkan per baris)</label>
+                            <textarea 
+                              className="form-textarea min-h-[80px]" 
+                              value={data.pustaka.pendukung.join('\n')}
+                              onChange={(e) => {
+                                const updated = { ...data };
+                                updated.pustaka.pendukung = e.target.value.split('\n');
+                                setData(updated);
+                                setJsonText(JSON.stringify(updated, null, 2));
+                              }}
+                            />
+                          </div>
+
+                          <div className="form-group">
+                            <label>Software Media Pembelajaran (Pisahkan per baris)</label>
+                            <textarea 
+                              className="form-textarea min-h-[60px]" 
+                              value={data.media_pembelajaran.software.join('\n')}
+                              onChange={(e) => {
+                                const updated = { ...data };
+                                updated.media_pembelajaran.software = e.target.value.split('\n');
+                                setData(updated);
+                                setJsonText(JSON.stringify(updated, null, 2));
+                              }}
+                            />
+                          </div>
+
+                          <div className="form-group">
+                            <label>Hardware Media Pembelajaran (Pisahkan per baris)</label>
+                            <textarea 
+                              className="form-textarea min-h-[60px]" 
+                              value={data.media_pembelajaran.hardware.join('\n')}
+                              onChange={(e) => {
+                                const updated = { ...data };
+                                updated.media_pembelajaran.hardware = e.target.value.split('\n');
+                                setData(updated);
+                                setJsonText(JSON.stringify(updated, null, 2));
+                              }}
+                            />
+                          </div>
+
+                          <div className="form-group">
+                            <label>Team Teaching (Pisahkan per baris)</label>
                             <input 
                               type="text" 
-                              className="form-input flex-1 py-1.5" 
-                              value={bk}
+                              className="form-input" 
+                              value={data.team_teaching.join('\n')}
                               onChange={(e) => {
                                 const updated = { ...data };
-                                updated.pustaka.utama[idx] = e.target.value;
-                                setData(updated);
-                                setJsonText(JSON.stringify(updated, null, 2));
-                              }}
-                            />
-                            <button className="text-red-400 p-1" onClick={() => removePustakaUtama(idx)}>
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
-                        ))}
-                        <button className="add-btn" onClick={addPustakaUtama}><Plus size={14} /> Tambah Buku Utama</button>
-                      </div>
-
-                      <div className="form-group mt-4">
-                        <label>Pustaka Pendukung (Pisahkan per baris)</label>
-                        <textarea 
-                          className="form-textarea min-h-[80px]" 
-                          value={data.pustaka.pendukung.join('\n')}
-                          onChange={(e) => {
-                            const updated = { ...data };
-                            updated.pustaka.pendukung = e.target.value.split('\n');
-                            setData(updated);
-                            setJsonText(JSON.stringify(updated, null, 2));
-                          }}
-                        />
-                      </div>
-
-                      <div className="form-group">
-                        <label>Software Media Pembelajaran (Pisahkan per baris)</label>
-                        <textarea 
-                          className="form-textarea min-h-[60px]" 
-                          value={data.media_pembelajaran.software.join('\n')}
-                          onChange={(e) => {
-                            const updated = { ...data };
-                            updated.media_pembelajaran.software = e.target.value.split('\n');
-                            setData(updated);
-                            setJsonText(JSON.stringify(updated, null, 2));
-                          }}
-                        />
-                      </div>
-
-                      <div className="form-group">
-                        <label>Hardware Media Pembelajaran (Pisahkan per baris)</label>
-                        <textarea 
-                          className="form-textarea min-h-[60px]" 
-                          value={data.media_pembelajaran.hardware.join('\n')}
-                          onChange={(e) => {
-                            const updated = { ...data };
-                            updated.media_pembelajaran.hardware = e.target.value.split('\n');
-                            setData(updated);
-                            setJsonText(JSON.stringify(updated, null, 2));
-                          }}
-                        />
-                      </div>
-
-                      <div className="form-group">
-                        <label>Team Teaching (Pisahkan per baris)</label>
-                        <input 
-                          type="text" 
-                          className="form-input" 
-                          value={data.team_teaching.join('\n')}
-                          onChange={(e) => {
-                            const updated = { ...data };
-                            updated.team_teaching = e.target.value.split('\n');
-                            setData(updated);
-                            setJsonText(JSON.stringify(updated, null, 2));
-                          }}
-                        />
-                      </div>
-
-                      <div className="form-group">
-                        <label>Mata Kuliah Prasyarat</label>
-                        <input 
-                          type="text" 
-                          className="form-input" 
-                          value={data.matakuliah_prasyarat}
-                          onChange={(e) => updateField('matakuliah_prasyarat', null, e.target.value)}
-                        />
-                      </div>
-
-                    </div>
-                  )}
-                </div>
-
-                {/* 8. RENCANA KEGIATAN MINGGUAN (SYLLABUS) */}
-                <div className="border border-slate-700 rounded-lg p-4 mb-4 bg-slate-900/30">
-                  <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('mingguan')}>
-                    <span className="form-section-title mb-0"><List size={18} /> 8. Rencana Kegiatan Mingguan ({data.rencana_mingguan.length} Minggu)</span>
-                    {collapsedSections.mingguan ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
-                  </div>
-                  {!collapsedSections.mingguan && (
-                    <div className="mt-4 space-y-6">
-                      {data.rencana_mingguan.map((week, idx) => (
-                        <div key={idx} className="repeating-item">
-                          <button className="delete-btn" onClick={() => removeMingguan(idx)}>
-                            <Trash2 size={16} />
-                          </button>
-                          
-                          <div className="form-row mb-2">
-                            <div className="form-group mb-0">
-                              <label>Pertemuan / Minggu</label>
-                              <input 
-                                type="text" 
-                                className="form-input py-1" 
-                                value={week.minggu}
-                                onChange={(e) => {
-                                  const updated = { ...data };
-                                  updated.rencana_mingguan[idx].minggu = e.target.value;
-                                  setData(updated);
-                                  setJsonText(JSON.stringify(updated, null, 2));
-                                }}
-                              />
-                            </div>
-                            <div className="form-group mb-0">
-                              <label>CPMK</label>
-                              <input 
-                                type="text" 
-                                className="form-input py-1" 
-                                value={week.cpmk}
-                                onChange={(e) => {
-                                  const updated = { ...data };
-                                  updated.rencana_mingguan[idx].cpmk = e.target.value;
-                                  setData(updated);
-                                  setJsonText(JSON.stringify(updated, null, 2));
-                                }}
-                              />
-                            </div>
-                          </div>
-
-                          <div className="form-group mb-2">
-                            <label>Kemampuan Akhir yang Diharapkan (Sub-CPMK)</label>
-                            <textarea 
-                              className="form-textarea min-h-[50px] py-1" 
-                              value={week.sub_cpmk}
-                              onChange={(e) => {
-                                const updated = { ...data };
-                                updated.rencana_mingguan[idx].sub_cpmk = e.target.value;
+                                updated.team_teaching = e.target.value.split('\n');
                                 setData(updated);
                                 setJsonText(JSON.stringify(updated, null, 2));
                               }}
                             />
                           </div>
 
-                          <div className="form-group mb-2">
-                            <label>Indikator Penilaian</label>
-                            <textarea 
-                              className="form-textarea min-h-[50px] py-1" 
-                              value={week.indikator}
-                              onChange={(e) => {
-                                const updated = { ...data };
-                                updated.rencana_mingguan[idx].indikator = e.target.value;
-                                setData(updated);
-                                setJsonText(JSON.stringify(updated, null, 2));
-                              }}
-                            />
-                          </div>
-
-                          <div className="form-row mb-2">
-                            <div className="form-group mb-0">
-                              <label>Komponen Penilaian</label>
-                              <input 
-                                type="text" 
-                                className="form-input py-1" 
-                                value={week.komponen_penilaian}
-                                onChange={(e) => {
-                                  const updated = { ...data };
-                                  updated.rencana_mingguan[idx].komponen_penilaian = e.target.value;
-                                  setData(updated);
-                                  setJsonText(JSON.stringify(updated, null, 2));
-                                }}
-                              />
-                            </div>
-                            <div className="form-group mb-0">
-                              <label>Bobot Penilaian</label>
-                              <input 
-                                type="text" 
-                                className="form-input py-1" 
-                                value={week.bobot}
-                                onChange={(e) => {
-                                  const updated = { ...data };
-                                  updated.rencana_mingguan[idx].bobot = e.target.value;
-                                  setData(updated);
-                                  setJsonText(JSON.stringify(updated, null, 2));
-                                }}
-                              />
-                            </div>
-                          </div>
-
-                          <div className="form-row mb-2">
-                            <div className="form-group mb-0">
-                              <label>Bentuk Pembelajaran Luring</label>
-                              <textarea 
-                                className="form-textarea min-h-[50px] py-1" 
-                                value={week.luring}
-                                onChange={(e) => {
-                                  const updated = { ...data };
-                                  updated.rencana_mingguan[idx].luring = e.target.value;
-                                  setData(updated);
-                                  setJsonText(JSON.stringify(updated, null, 2));
-                                }}
-                              />
-                            </div>
-                            <div className="form-group mb-0">
-                              <label>Bentuk Pembelajaran Daring</label>
-                              <textarea 
-                                className="form-textarea min-h-[50px] py-1" 
-                                value={week.daring}
-                                onChange={(e) => {
-                                  const updated = { ...data };
-                                  updated.rencana_mingguan[idx].daring = e.target.value;
-                                  setData(updated);
-                                  setJsonText(JSON.stringify(updated, null, 2));
-                                }}
-                              />
-                            </div>
-                          </div>
-
-                          <div className="form-group mb-0">
-                            <label>Materi Pembelajaran [Pustaka]</label>
-                            <textarea 
-                              className="form-textarea min-h-[50px] py-1" 
-                              value={week.materi_pembelajaran}
-                              onChange={(e) => {
-                                const updated = { ...data };
-                                updated.rencana_mingguan[idx].materi_pembelajaran = e.target.value;
-                                setData(updated);
-                                setJsonText(JSON.stringify(updated, null, 2));
-                              }}
+                          <div className="form-group">
+                            <label>Mata Kuliah Prasyarat</label>
+                            <input 
+                              type="text" 
+                              className="form-input" 
+                              value={data.matakuliah_prasyarat}
+                              onChange={(e) => updateField('matakuliah_prasyarat', null, e.target.value)}
                             />
                           </div>
 
                         </div>
-                      ))}
-                      <button className="add-btn" onClick={addMingguan}><Plus size={14} /> Tambah Pertemuan Mingguan</button>
+                      )}
                     </div>
-                  )}
-                </div>
 
+                    {/* 8. RENCANA KEGIATAN MINGGUAN (SYLLABUS) */}
+                    <div className="border border-slate-700 rounded-lg p-4 mb-4 bg-slate-900/30">
+                      <div className="flex justify-between items-center cursor-pointer" onClick={() => toggleSection('mingguan')}>
+                        <span className="form-section-title mb-0"><List size={18} /> 8. Rencana Kegiatan Mingguan ({data.rencana_mingguan.length} Minggu)</span>
+                        {collapsedSections.mingguan ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
+                      </div>
+                      {!collapsedSections.mingguan && (
+                        <div className="mt-4 space-y-6">
+                          {data.rencana_mingguan.map((week, idx) => (
+                            <div key={idx} className="repeating-item">
+                              <button className="delete-btn" onClick={() => removeMingguan(idx)}>
+                                <Trash2 size={16} />
+                              </button>
+                              
+                              <div className="form-row mb-2">
+                                <div className="form-group mb-0">
+                                  <label>Pertemuan / Minggu</label>
+                                  <input 
+                                    type="text" 
+                                    className="form-input py-1" 
+                                    value={week.minggu}
+                                    onChange={(e) => {
+                                      const updated = { ...data };
+                                      updated.rencana_mingguan[idx].minggu = e.target.value;
+                                      setData(updated);
+                                      setJsonText(JSON.stringify(updated, null, 2));
+                                    }}
+                                  />
+                                </div>
+                                <div className="form-group mb-0">
+                                  <label>CPMK</label>
+                                  <input 
+                                    type="text" 
+                                    className="form-input py-1" 
+                                    value={week.cpmk}
+                                    onChange={(e) => {
+                                      const updated = { ...data };
+                                      updated.rencana_mingguan[idx].cpmk = e.target.value;
+                                      setData(updated);
+                                      setJsonText(JSON.stringify(updated, null, 2));
+                                    }}
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="form-group mb-2">
+                                <label>Kemampuan Akhir yang Diharapkan (Sub-CPMK)</label>
+                                <textarea 
+                                  className="form-textarea min-h-[50px] py-1" 
+                                  value={week.sub_cpmk}
+                                  onChange={(e) => {
+                                    const updated = { ...data };
+                                    updated.rencana_mingguan[idx].sub_cpmk = e.target.value;
+                                    setData(updated);
+                                    setJsonText(JSON.stringify(updated, null, 2));
+                                  }}
+                                />
+                              </div>
+
+                              <div className="form-group mb-2">
+                                <label>Indikator Penilaian</label>
+                                <textarea 
+                                  className="form-textarea min-h-[50px] py-1" 
+                                  value={week.indikator}
+                                  onChange={(e) => {
+                                    const updated = { ...data };
+                                    updated.rencana_mingguan[idx].indikator = e.target.value;
+                                    setData(updated);
+                                    setJsonText(JSON.stringify(updated, null, 2));
+                                  }}
+                                />
+                              </div>
+
+                              <div className="form-row mb-2">
+                                <div className="form-group mb-0">
+                                  <label>Komponen Penilaian</label>
+                                  <input 
+                                    type="text" 
+                                    className="form-input py-1" 
+                                    value={week.komponen_penilaian}
+                                    onChange={(e) => {
+                                      const updated = { ...data };
+                                      updated.rencana_mingguan[idx].komponen_penilaian = e.target.value;
+                                      setData(updated);
+                                      setJsonText(JSON.stringify(updated, null, 2));
+                                    }}
+                                  />
+                                </div>
+                                <div className="form-group mb-0">
+                                  <label>Bobot Penilaian</label>
+                                  <input 
+                                    type="text" 
+                                    className="form-input py-1" 
+                                    value={week.bobot}
+                                    onChange={(e) => {
+                                      const updated = { ...data };
+                                      updated.rencana_mingguan[idx].bobot = e.target.value;
+                                      setData(updated);
+                                      setJsonText(JSON.stringify(updated, null, 2));
+                                    }}
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="form-row mb-2">
+                                <div className="form-group mb-0">
+                                  <label>Bentuk Pembelajaran Luring</label>
+                                  <textarea 
+                                    className="form-textarea min-h-[50px] py-1" 
+                                    value={week.luring}
+                                    onChange={(e) => {
+                                      const updated = { ...data };
+                                      updated.rencana_mingguan[idx].luring = e.target.value;
+                                      setData(updated);
+                                      setJsonText(JSON.stringify(updated, null, 2));
+                                    }}
+                                  />
+                                </div>
+                                <div className="form-group mb-0">
+                                  <label>Bentuk Pembelajaran Daring</label>
+                                  <textarea 
+                                    className="form-textarea min-h-[50px] py-1" 
+                                    value={week.daring}
+                                    onChange={(e) => {
+                                      const updated = { ...data };
+                                      updated.rencana_mingguan[idx].daring = e.target.value;
+                                      setData(updated);
+                                      setJsonText(JSON.stringify(updated, null, 2));
+                                    }}
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="form-group mb-0">
+                                <label>Materi Pembelajaran [Pustaka]</label>
+                                <textarea 
+                                  className="form-textarea min-h-[50px] py-1" 
+                                  value={week.materi_pembelajaran}
+                                  onChange={(e) => {
+                                    const updated = { ...data };
+                                    updated.rencana_mingguan[idx].materi_pembelajaran = e.target.value;
+                                    setData(updated);
+                                    setJsonText(JSON.stringify(updated, null, 2));
+                                  }}
+                                />
+                              </div>
+
+                            </div>
+                          ))}
+                          <button className="add-btn" onClick={addMingguan}><Plus size={14} /> Tambah Pertemuan Mingguan</button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -1159,7 +1555,7 @@ export default function App() {
                     </td>
                     <td colSpan={6} style={{ fontSize: '8.5pt', padding: '8px' }}>
                       <ol className="numbered-list" style={{ paddingLeft: '16px', margin: 0 }}>
-                        {data.materi_pembelajaran.filter(m => m.trim() !== "").map((m, idx) => (
+                        {data.materi_pembelajaran.filter(m => typeof m === 'string' && m.trim() !== "").map((m, idx) => (
                           <li key={idx} style={{ marginBottom: '4px' }}>{m}</li>
                         ))}
                       </ol>
@@ -1205,7 +1601,7 @@ export default function App() {
                     <td colSpan={2} className="font-bold bg-light-grey" style={{ fontSize: '8.5pt', backgroundColor: '#f2f2f2', verticalAlign: 'middle' }}>Pustaka Utama</td>
                     <td colSpan={6} style={{ padding: '8px' }}>
                       <ol className="numbered-list" style={{ margin: 0, paddingLeft: '14px', fontSize: '8pt' }}>
-                        {data.pustaka.utama.filter(b => b.trim() !== "").map((b, idx) => (
+                        {data.pustaka.utama.filter(b => typeof b === 'string' && b.trim() !== "").map((b, idx) => (
                           <li key={idx} style={{ marginBottom: '6px' }}>{b}</li>
                         ))}
                       </ol>
@@ -1215,7 +1611,7 @@ export default function App() {
                     <td colSpan={2} className="font-bold bg-light-grey" style={{ fontSize: '8.5pt', backgroundColor: '#f2f2f2', verticalAlign: 'middle' }}>Pustaka Pendukung</td>
                     <td colSpan={6} style={{ padding: '8px' }}>
                       <ul className="bulleted-list" style={{ margin: 0, paddingLeft: '14px', fontSize: '8pt' }}>
-                        {data.pustaka.pendukung.filter(b => b.trim() !== "").map((b, idx) => (
+                        {data.pustaka.pendukung.filter(b => typeof b === 'string' && b.trim() !== "").map((b, idx) => (
                           <li key={idx}>{b}</li>
                         ))}
                       </ul>
@@ -1232,14 +1628,14 @@ export default function App() {
                     <td colSpan={2} className="font-bold" style={{ backgroundColor: '#f2f2f2' }}></td>
                     <td colSpan={3} style={{ padding: '8px' }}>
                       <ul className="bulleted-list" style={{ margin: 0, paddingLeft: '14px' }}>
-                        {data.media_pembelajaran.software.filter(s => s.trim() !== "").map((s, idx) => (
+                        {data.media_pembelajaran.software.filter(s => typeof s === 'string' && s.trim() !== "").map((s, idx) => (
                           <li key={idx}>{s}</li>
                         ))}
                       </ul>
                     </td>
                     <td colSpan={3} style={{ padding: '8px' }}>
                       <ul className="bulleted-list" style={{ margin: 0, paddingLeft: '14px' }}>
-                        {data.media_pembelajaran.hardware.filter(h => h.trim() !== "").map((h, idx) => (
+                        {data.media_pembelajaran.hardware.filter(h => typeof h === 'string' && h.trim() !== "").map((h, idx) => (
                           <li key={idx}>{h}</li>
                         ))}
                       </ul>
@@ -1312,6 +1708,78 @@ export default function App() {
           </div>
         </section>
       </div>
+
+      {/* Premium AI Loading Overlay */}
+      {isGenerating && (
+        <div className="ai-loading-overlay">
+          <div className="ai-loading-card">
+            <div className="ai-spinner-container">
+              <div className="ai-outer-ring"></div>
+              <div className="ai-inner-glow"></div>
+              <div className="ai-core-star">
+                <Sparkles className="text-violet-400" size={18} />
+              </div>
+            </div>
+
+            <h3 className="ai-loading-title">Menyusun Dokumen RPS Anda</h3>
+            <p className="ai-loading-subtitle">
+              {errorMsg ? (
+                <span className="text-red-400 block font-semibold">{errorMsg}</span>
+              ) : (
+                <>
+                  {generationStep === 0 && "Menganalisis parameter mata kuliah dan CPL..."}
+                  {generationStep === 1 && "Merancang Capaian Pembelajaran Mata Kuliah (CPMK) yang sinkron..."}
+                  {generationStep === 2 && "Menyusun Pokok Bahasan materi & referensi pustaka terpercaya..."}
+                  {generationStep === 3 && "Merumuskan matriks silabus mingguan untuk 16 pertemuan lengkap..."}
+                  {generationStep === 4 && "Membuat skema metode evaluasi penilaian berbobot..."}
+                  {generationStep === 5 && "Sukses! Memverifikasi dokumen dan mengalihkan Anda ke JSON Editor..."}
+                </>
+              )}
+            </p>
+
+            {!errorMsg && (
+              <div className="ai-progress-bar-container">
+                <div 
+                  className="ai-progress-bar" 
+                  style={{ width: `${(generationStep / 5) * 100}%` }}
+                ></div>
+              </div>
+            )}
+
+            {!errorMsg ? (
+              <div className="ai-steps-list">
+                <div className={`ai-step-item ${generationStep === 0 ? 'active' : ''} ${generationStep > 0 ? 'completed' : ''}`}>
+                  <div className="ai-step-bullet"></div>
+                  <span>1. Menganalisis CPL & Parameter Utama MK</span>
+                </div>
+                <div className={`ai-step-item ${generationStep === 1 ? 'active' : ''} ${generationStep > 1 ? 'completed' : ''}`}>
+                  <div className="ai-step-bullet"></div>
+                  <span>2. Merumuskan CPMK & Pemetaan Hubungan</span>
+                </div>
+                <div className={`ai-step-item ${generationStep === 2 ? 'active' : ''} ${generationStep > 2 ? 'completed' : ''}`}>
+                  <div className="ai-step-bullet"></div>
+                  <span>3. Menyusun Deskripsi Singkat & Pustaka</span>
+                </div>
+                <div className={`ai-step-item ${generationStep === 3 ? 'active' : ''} ${generationStep > 3 ? 'completed' : ''}`}>
+                  <div className="ai-step-bullet"></div>
+                  <span>4. Merancang Silabus Silang 16 Minggu Lengkap</span>
+                </div>
+                <div className={`ai-step-item ${generationStep === 4 ? 'active' : ''} ${generationStep > 4 ? 'completed' : ''}`}>
+                  <div className="ai-step-bullet"></div>
+                  <span>5. Menyusun Metode Penilaian & Bobot Evaluasi</span>
+                </div>
+              </div>
+            ) : (
+              <button 
+                className="btn btn-secondary text-xs mt-2 px-6"
+                onClick={() => setIsGenerating(false)}
+              >
+                Tutup & Coba Lagi
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
