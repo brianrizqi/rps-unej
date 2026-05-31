@@ -1,17 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Fira+Code:wght@400;500&display=swap');
 
 :root {
-  --primary: #3b82f6;
-  --primary-hover: #2563eb;
-  --bg-app: #0f172a;
-  --bg-card: #1e293b;
-  --bg-input: #0f172a;
-  --border-ui: #334155;
+  --primary: #ef4444; /* Clean premium red that pops beautifully in dark mode */
+  --primary-hover: #dc2626;
+  --bg-app: #0d0e12; /* Softer, matte charcoal dark background */
+  --bg-card: #15171e; /* Smooth, velvet card panel */
+  --bg-input: #090a0d; /* Warm deep input container */
+  --bg-sidebar: #15171e; /* Sidebar matches card background in dark mode */
+  --border-ui: #1f222b; /* Subtle, low-contrast border to prevent eye strain */
   --text-ui: #f8fafc;
-  --text-muted: #94a3b8;
-  --accent: #10b981;
-  --accent-hover: #059669;
+  --text-muted: #7e899a; /* Softer text color for optimal readability */
+  --accent: #f59e0b; /* Golden accent (secondary / optional) */
+  --accent-hover: #d97706;
   
+  /* Notice box colors for dark theme */
+  --notice-bg: rgba(153, 0, 0, 0.08);
+  --notice-border: rgba(204, 164, 59, 0.25);
+  --notice-text: #fef08a;
+
   /* Print layout uses standard black & white serif styling */
   --print-text: #000000;
   --print-border: #000000;
@@ -19,12 +25,20 @@
 }
 
 [data-theme="light"] {
-  --bg-app: #f1f5f9;
-  --bg-card: #ffffff;
-  --bg-input: #f8fafc;
-  --border-ui: #cbd5e1;
+  --primary: #dc2626; /* A slightly deeper solid red for perfect light mode contrast */
+  --primary-hover: #b91c1c;
+  --bg-app: #f8fafc; /* Beautiful soft off-white workspace background */
+  --bg-card: #ffffff; /* Pure crisp white for cards/panels */
+  --bg-input: #f8fafc; /* Clean off-white inside inputs for high-contrast visibility */
+  --bg-sidebar: #f1f5f9; /* Softer light gray for the sidebar background to make white cards pop */
+  --border-ui: #e2e8f0; /* Ultra-soft light slate border */
   --text-ui: #0f172a;
   --text-muted: #64748b;
+  
+  /* Notice box colors for light theme (dark red for perfect readability) */
+  --notice-bg: rgba(220, 38, 38, 0.05);
+  --notice-border: rgba(220, 38, 38, 0.15);
+  --notice-text: #991b1b;
 }
 
 * {
@@ -70,9 +84,7 @@ body {
   font-size: 1.15rem;
   font-weight: 700;
   letter-spacing: -0.025em;
-  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--primary);
 }
 
 .header-actions {
@@ -93,7 +105,7 @@ body {
 .editor-pane {
   width: 30%;
   min-width: 320px;
-  background-color: var(--bg-card);
+  background-color: var(--bg-sidebar);
   border-right: 1px solid var(--border-ui);
   display: flex;
   flex-direction: column;
@@ -326,11 +338,11 @@ body {
 .zoom-capsule {
   display: inline-flex;
   align-items: center;
-  background-color: rgba(15, 23, 42, 0.6);
+  background-color: var(--bg-card);
   border: 1px solid var(--border-ui);
   border-radius: 9999px;
   padding: 2px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .zoom-capsule-btn {
@@ -348,8 +360,8 @@ body {
 }
 
 .zoom-capsule-btn:hover {
-  color: var(--text-ui);
-  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--primary);
+  background-color: rgba(128, 128, 128, 0.15);
 }
 
 .zoom-capsule-val {
@@ -364,12 +376,12 @@ body {
 .zoom-presets-group {
   display: inline-flex;
   align-items: center;
-  background-color: rgba(15, 23, 42, 0.6);
+  background-color: var(--bg-card);
   border: 1px solid var(--border-ui);
   border-radius: 9999px;
   padding: 2px;
   gap: 2px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .zoom-preset-btn {
@@ -680,12 +692,12 @@ body {
 
 /* --- PREMIUM AI MODE STYLING --- */
 .ai-config-panel {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-ui);
   border-radius: 12px;
   padding: 16px;
   margin-bottom: 20px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 0 15px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
   position: relative;
   overflow: hidden;
 }
@@ -697,7 +709,7 @@ body {
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, #3b82f6, #10b981);
+  background-color: var(--primary);
 }
 
 .mode-switcher-container {
@@ -733,15 +745,33 @@ body {
 }
 
 .mode-switch-btn.active {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: var(--primary);
   color: #ffffff;
-  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.25);
+}
+
+/* AI Parameter Panels */
+.ai-param-panel {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-ui);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+.ai-param-panel .form-section-title {
+  margin-top: 0;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--border-ui);
+  padding-bottom: 10px;
+  color: var(--primary);
 }
 
 /* AI Generation Button */
 .btn-ai-generate {
   width: 100%;
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  background: var(--primary);
   color: white;
   border: none;
   padding: 12px 20px;
@@ -753,15 +783,15 @@ body {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.25);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
 }
 
 .btn-ai-generate:hover:not(:disabled) {
-  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45);
+  background: var(--primary-hover);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
   transform: translateY(-1px);
 }
 
@@ -939,8 +969,8 @@ body {
 }
 
 .ai-step-item.active .ai-step-bullet {
-  background-color: #3b82f6;
-  box-shadow: 0 0 8px #3b82f6;
+  background-color: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
 }
 
 .ai-step-item.completed .ai-step-bullet {
@@ -948,8 +978,8 @@ body {
 }
 
 .form-brief-notice {
-  background-color: rgba(59, 130, 246, 0.08);
-  border: 1px dashed rgba(59, 130, 246, 0.25);
+  background-color: var(--notice-bg);
+  border: 1px dashed var(--notice-border);
   border-radius: 8px;
   padding: 12px 16px;
   margin-bottom: 20px;
@@ -960,7 +990,16 @@ body {
 
 .form-brief-notice-text {
   font-size: 0.8rem;
-  color: #93c5fd;
+  color: var(--notice-text);
   line-height: 1.45;
+}
+
+/* Override Blue Utility Classes from Tailwind for Red/Gold Theme */
+.text-blue-500, .text-blue-400 {
+  color: var(--accent) !important;
+}
+
+.focus\:border-blue-500:focus {
+  border-color: var(--primary) !important;
 }
 

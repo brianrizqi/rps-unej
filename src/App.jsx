@@ -30,12 +30,17 @@ export default function App() {
   const [jsonText, setJsonText] = useState(JSON.stringify(defaultTemplate, null, 2));
   const [jsonError, setJsonError] = useState(null);
   const [activeTab, setActiveTab] = useState('form'); // 'form' or 'json'
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('theme') || 'dark';
+  });
   const [zoom, setZoom] = useState(70); // default zoom to fit screen (70%)
   
   // AI Generator & UI States
   const [editorMode, setEditorMode] = useState('brief'); // 'brief' or 'full'
-  const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY || '';
+  const openrouterApiKey = import.meta.env.VITE_OPENROUTER_API_KEY || '';
+  const geminiApiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
+  const [aiModel, setAiModel] = useState('gemini-direct'); // 'gemini-direct', 'openrouter-gemini', 'openrouter-gpt4o'
+  const [aiNotes, setAiNotes] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationStep, setGenerationStep] = useState(0);
   const [errorMsg, setErrorMsg] = useState('');
@@ -83,9 +88,21 @@ export default function App() {
   };
 
   const handleGenerateAI = async () => {
-    if (!apiKey.trim()) {
-      alert("API Key OpenRouter tidak ditemukan. Harap tambahkan VITE_OPENROUTER_API_KEY di berkas .env Anda terlebih dahulu.");
-      return;
+    let currentApiKey = '';
+    let isGeminiDirect = aiModel === 'gemini-direct';
+
+    if (isGeminiDirect) {
+      currentApiKey = geminiApiKey;
+      if (!currentApiKey.trim()) {
+        alert("API Key Gemini tidak ditemukan. Harap tambahkan VITE_GEMINI_API_KEY di berkas .env Anda terlebih dahulu.");
+        return;
+      }
+    } else {
+      currentApiKey = openrouterApiKey;
+      if (!currentApiKey.trim()) {
+        alert("API Key OpenRouter tidak ditemukan. Harap tambahkan VITE_OPENROUTER_API_KEY di berkas .env Anda terlebih dahulu.");
+        return;
+      }
     }
 
     setIsGenerating(true);
@@ -201,43 +218,92 @@ Silakan lengkapi seluruh field lainnya dalam dokumen RPS ini dan kembalikan data
 
 Harap berikan respons HANYA berupa objek JSON yang valid dan lengkap tanpa markdown block (seperti \`\`\`json) atau teks pengantar/penutup apapun agar dapat di-parse langsung.`;
 
-    try {
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`,
-          "HTTP-Referer": "https://github.com/brianrizqi/rps",
-          "X-Title": "RPS UNEJ Generator"
-        },
-        body: JSON.stringify({
-          model: "openai/gpt-4o-mini",
-          response_format: { type: "json_object" },
-          messages: [
-            {
-              role: "system",
-              content: "Anda adalah asisten kurikulum akademik perguruan tinggi di Indonesia. Anda bertugas menyusun RPS lengkap berbasis standar OBE (Outcome Based Education) dan BAN-PT. Setiap data output harus berupa JSON yang sangat valid dan lengkap."
-            },
-            {
-              role: "user",
-              content: userPrompt
-            }
-          ],
-          temperature: 0.7
-        })
-      });
+    const finalPrompt = aiNotes.trim() 
+      ? `${userPrompt}\n\nCATATAN / REQUEST KHUSUS DARI PENGGUNA (Harap patuhi sepenuhnya):\n${aiNotes}`
+      : userPrompt;
 
-      if (!response.ok) {
-        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    try {
+      let choiceContent = "";
+
+      if (isGeminiDirect) {
+        // Direct Gemini API
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${currentApiKey}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                role: "user",
+                parts: [
+                  {
+                    text: `System: Anda adalah asisten kurikulum akademik perguruan tinggi di Indonesia. Anda bertugas menyusun RPS lengkap berbasis standar OBE (Outcome Based Education) dan BAN-PT. Setiap data output harus berupa JSON yang sangat valid dan lengkap.\n\nUser: ${finalPrompt}`
+                  }
+                ]
+              }
+            ],
+            generationConfig: {
+              responseMimeType: "application/json"
+            }
+          })
+        });
+
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(`Gemini API Error: ${response.status} ${response.statusText} - ${errData.error?.message || 'Koneksi gagal.'}`);
+        }
+
+        const resData = await response.json();
+        choiceContent = resData.candidates?.[0]?.content?.parts?.[0]?.text;
+      } else {
+        // OpenRouter API
+        let modelName = 'openai/gpt-4o-mini';
+        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${currentApiKey}`,
+            "HTTP-Referer": "https://github.com/brianrizqi/rps",
+            "X-Title": "RPS UNEJ Generator"
+          },
+          body: JSON.stringify({
+            model: modelName,
+            response_format: { type: "json_object" },
+            messages: [
+              {
+                role: "system",
+                content: "Anda adalah asisten kurikulum akademik perguruan tinggi di Indonesia. Anda bertugas menyusun RPS lengkap berbasis standar OBE (Outcome Based Education) dan BAN-PT. Setiap data output harus berupa JSON yang sangat valid dan lengkap."
+              },
+              {
+                role: "user",
+                content: finalPrompt
+              }
+            ],
+            temperature: 0.7
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`OpenRouter Error: ${response.status} ${response.statusText}`);
+        }
+
+        const resData = await response.json();
+        choiceContent = resData.choices?.[0]?.message?.content;
       }
 
-      const resData = await response.json();
-      const choiceContent = resData.choices[0]?.message?.content;
       if (!choiceContent) {
         throw new Error("Gagal menerima hasil dari AI.");
       }
 
-      const parsedData = JSON.parse(choiceContent);
+      // Cleanup formatting if markdown block was returned
+      let cleanText = choiceContent.trim();
+      if (cleanText.startsWith("```")) {
+        cleanText = cleanText.replace(/^```[a-zA-Z0-9]*\n/, "");
+        cleanText = cleanText.replace(/\n```$/, "");
+      }
+
+      const parsedData = JSON.parse(cleanText);
       
       // Update UI state
       setData(parsedData);
@@ -377,6 +443,7 @@ Harap berikan respons HANYA berupa objek JSON yang valid dan lengkap tanpa markd
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
   }, [theme]);
 
   // Official UNEJ logo image
@@ -491,7 +558,7 @@ Harap berikan respons HANYA berupa objek JSON yang valid dan lengkap tanpa markd
                     </div>
 
                     {/* 1. IDENTITAS & MATA KULIAH */}
-                    <div className="border border-slate-700 rounded-lg p-4 bg-slate-900/30 space-y-4">
+                    <div className="ai-param-panel">
                       <h3 className="form-section-title mb-0"><Sparkles size={16} /> 1. Parameter Utama MK</h3>
                       
                       <div className="form-group">
@@ -575,7 +642,7 @@ Harap berikan respons HANYA berupa objek JSON yang valid dan lengkap tanpa markd
                     </div>
 
                     {/* 2. TIM PENGESAH / OTORISASI */}
-                    <div className="border border-slate-700 rounded-lg p-4 bg-slate-900/30 space-y-4">
+                    <div className="ai-param-panel">
                       <h3 className="form-section-title mb-0"><Sparkles size={16} /> 2. Otorisasi Pengesahan</h3>
                       
                       <div className="form-group">
@@ -613,7 +680,7 @@ Harap berikan respons HANYA berupa objek JSON yang valid dan lengkap tanpa markd
                     </div>
 
                     {/* 3. CAPAIAN PEMBELAJARAN (CPL) */}
-                    <div className="border border-slate-700 rounded-lg p-4 bg-slate-900/30 space-y-4">
+                    <div className="ai-param-panel">
                       <h3 className="form-section-title mb-0"><Sparkles size={16} /> 3. CPL yang Dibebankan</h3>
                       
                       <div>
@@ -659,12 +726,40 @@ Harap berikan respons HANYA berupa objek JSON yang valid dan lengkap tanpa markd
                         </button>
                       </div>
                     </div>
+ 
+                    {/* 4. CATATAN / REQUEST KHUSUS UNTUK AI (OPSIONAL) */}
+                    <div className="ai-param-panel">
+                      <h3 className="form-section-title mb-0"><Sparkles size={16} /> 4. Catatan / Permintaan Khusus (Opsional)</h3>
+                      <div className="form-group mb-0">
+                        <label className="text-[10px] text-slate-400 font-bold block mb-1">INSTRUKSI KUSTOM UNTUK STRUKTUR RPS</label>
+                        <textarea 
+                          className="form-textarea min-h-[90px] w-full bg-slate-900 border border-slate-700 text-xs py-2 px-3 rounded focus:border-blue-500 focus:outline-none placeholder-slate-500 text-white"
+                          value={aiNotes}
+                          onChange={(e) => setAiNotes(e.target.value)}
+                          placeholder="Contoh:&#10;- UTS bobotnya 20% dan UAS 30%&#10;- Minggu ke-1 harus membahas tentang Pengenalan Dasar&#10;- Metode penilaian harus ada Project Akhir berupa pembuatan aplikasi web..."
+                          disabled={isGenerating}
+                        />
+                      </div>
+                    </div>
 
                     {/* AI GENERATE ACTION */}
+                    <div className="form-group mt-6">
+                      <label className="text-[10px] text-slate-400 font-bold block mb-1">PILIH MODEL AI & PROVIDER</label>
+                      <select 
+                        className="form-input bg-slate-900 border border-slate-700 text-white text-xs w-full py-2 px-3 rounded focus:border-blue-500 focus:outline-none cursor-pointer"
+                        value={aiModel}
+                        onChange={(e) => setAiModel(e.target.value)}
+                        disabled={isGenerating}
+                      >
+                        <option value="gemini-direct">Gemini 2.5 Flash (Gratis - Direct Google API) [Rekomendasi]</option>
+                        <option value="openrouter-gpt4o">GPT-4o Mini (OpenRouter)</option>
+                      </select>
+                    </div>
+
                     <button 
-                      className="btn-ai-generate mt-6"
+                      className="btn-ai-generate mt-4"
                       onClick={handleGenerateAI}
-                      disabled={isGenerating || !apiKey.trim()}
+                      disabled={isGenerating || (aiModel === 'gemini-direct' ? !geminiApiKey.trim() : !openrouterApiKey.trim())}
                     >
                       <Sparkles size={18} /> {isGenerating ? "Menganalisis & Menyusun..." : "Generate RPS dengan AI ✨"}
                     </button>
